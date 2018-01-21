@@ -1,0 +1,29 @@
+\documentclass[tikz, preview]{standalone}
+
+\usepackage{amsfonts, amsthm, amssymb, amsmath, stmaryrd, etoolbox}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows}
+
+\begin{document}
+\[
+\begin{tikzpicture}
+\node (STpb) at (0,2) {$S' \times_{S+T} T''$};
+\node (T'') at (3,2) {$T''$};
+\node (0) at (1.5,1) {$\emptyset$};
+\node (T) at (3,1) {$T$};
+\node (S') at (0,0) {$S'$};
+\node (S) at (1.5,0) {$S$};
+\node (ST) at (3,0) {$S+T$};
+%
+\draw [->] (STpb) edge (S');
+\draw [->] (STpb) edge (T'');
+\draw [->] (STpb) edge[dashed] (0);
+\draw [->] (0) edge (S);
+\draw [->] (0) edge (T);
+\draw [->] (S) edge (ST);
+\draw [->] (T) edge (ST);
+\draw [->] (S') edge (S);
+\draw [->] (T'') edge (T);
+\end{tikzpicture}
+\]
+\end{document}

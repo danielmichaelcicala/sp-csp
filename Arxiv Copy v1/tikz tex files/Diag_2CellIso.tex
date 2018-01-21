@@ -1,0 +1,34 @@
+\documentclass[tikz, preview]{standalone}
+
+\usepackage{amsfonts, amsthm, amssymb, amsmath, stmaryrd, etoolbox}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows}
+
+\begin{document}
+\[
+\begin{tikzpicture}
+\node (X) at (-2,0) {$X$};
+\node (L) at (1.25,1.5) {$L$};
+\node (Y) at (2,0) {$Y$};
+\node (S) at (-1.25,-1.5) {$S$};
+\node (S'1) at (0,0.75) {$S'_1$};
+\node (S'2) at (0,-0.75) {$S'_2$};
+%
+\draw [->] (X) edge[in=180,out=60] (L);
+\draw [->] (X) edge[] (S'1);
+\draw [->] (X) edge[] (S'2);
+\draw [->] (X) edge[out=-90,in=150] (S);
+\draw [->] (Y) edge[out=90,in=-30] (L);
+\draw [->] (Y) edge[] (S'2);
+\draw [->] (Y) edge[out=-120,in=0] (S);
+\draw [->] (S'1) edge[] (L);
+\draw [->] (S'1) edge[white,line width=3.5pt] (S);
+\draw [->] (S'1) edge[] (S);
+\draw [->] (S'1) edge[] (S'2);
+\draw [->] (S'2) edge[] (L);
+\draw [->] (S'2) edge[] (S);
+\draw [->] (Y) edge[white,line width=3.5pt] (S'1);
+\draw [->] (Y) edge[] (S'1);
+\end{tikzpicture}
+\]
+\end{document}

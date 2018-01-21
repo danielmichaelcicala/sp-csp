@@ -1,0 +1,370 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+
+%--------------- LOAD PACKAGES ---------------------------------
+
+\RequirePackage{amsfonts}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{comment}
+\RequirePackage{stmaryrd}
+\RequirePackage{etoolbox}
+\RequirePackage{mathtools}
+\RequirePackage{amsmath}
+\RequirePackage{mdwlist}
+\RequirePackage{mathrsfs}
+\RequirePackage{enumitem}
+\setlist{itemsep=0em, topsep=0em, parsep=0em}
+\setlist[enumerate]{label=(\alph*)}
+\RequirePackage{tikz, tikz-cd}
+\usetikzlibrary{matrix,arrows}
+\RequirePackage{multicol}
+\RequirePackage{arydshln,leftidx}
+\RequirePackage[breaklinks,hidelinks]{hyperref}
+\hypersetup{colorlinks,linkcolor={blue}}
+\RequirePackage{subfiles}
+\RequirePackage{makeidx}
+\RequirePackage{multirow}
+\RequirePackage{graphicx}
+
+%------------------------ NEW COMMANDS --------------------------
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\renewcommand{\epsilon}{\varepsilon}
+
+\newcommand{\entry}[1]{\section*{#1} \index{#1} \label{#1}}
+\newcommand{\cat}[1]{\mathtt{#1}}
+\newcommand{\define}[1]{\emph{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\scr}[1]{\mathscr{#1}}
+\newcommand{\op}[1]{\operatorname{#1}}
+\renewcommand{\t}[1]{\textup{#1}}
+\renewcommand{\and}{\textup{ and }}
+
+\newcommand{\from}{\colon}
+\newcommand{\xto}[1]{\xrightarrow{#1}}
+\newcommand{\unto}{\leftarrow}
+\newcommand{\xunto}[1]{\xleftarrow{#1}}
+\newcommand{\sm}{\smallsetminus}
+\renewcommand{\(}{\left(}
+\renewcommand{\)}{\right)}
+\renewcommand{\ss}[2]{_{#1}^{#2}}
+\renewcommand{\{}{\left\lbrace}
+\renewcommand{\}}{\right\rbrace}
+\renewcommand{\hat}{\widehat}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\bar}{\overline}
+
+
+%-------------- DECLARE MATH OPERATORS --------------------
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\arr}{arr}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Bij}{Bij}
+
+%--------- ENVIRONMENTS BEYOND CLASS FILE -----------------
+
+\renewcommand{\thesection}
+
+\newtheorem*{thm}{Theorem}
+\newtheorem*{lem}{Lemma}
+\newtheorem*{prop}{Proposition}
+\newtheorem*{cor}{Corollary}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{notation}{Notation}
+
+\theoremstyle{definition}
+\newtheorem*{ex}{Example} 
+\newtheorem*{defn}{Definition}
+
+%-------------- BIBLIOGRAPHY STYLE / INDEX ---------------------
+
+\bibliographystyle{plain}
+\makeindex
+
+\author{Daniel Cicala}
+\title{My Math Dictionary}
+
+\begin{document}
+
+%--------------GOALS OF THIS-------------------
+\section*{Goals}
+
+The goals of this is to turn the category $\cat{F\t{-}Cospan(Sets)}$ as discussed in Brendan's paper \textit{Decorated Co-spans} into a bi-category using DPO Graph Rewriting.
+
+%---------------SETUP --------------------
+\section*{Setup}
+
+As required in Brendan's construction, let $F \from (\cat{FinSet},+) \to (\cat{Set},\times)$ be a monoidal functor 
+\begin{itemize}
+	\item sending a set $n$ to the collection of graphs on nodes $n$
+	\item sending a map $f \from x \to y$ of finite sets to the map $Fx \to Fy$ which assigns to each graph $e \xto{s,t} x$ the graph $e \xto{s,t} x \xto{f} y$.
+\end{itemize}
+Then an $F$-\define{decorated cospan} is a pair 
+\[
+	\( x \to n \unto y , \{\bullet\} \to Fn \)
+\]
+consisting of a co-span in $\cat{Sets}$ and a graph with node set $n$. A morphism of $f$-decorated co-spans 
+\[
+	(x \to n \unto y , \{\bullet\} \xto{s} Fn) \to (x \to m \unto y , \{\bullet\} \xto{t} Fm)
+\]
+is a set map $f \from n \to m$ such that the diagram
+\[
+	\begin{tikzcd}
+		\{ \bullet \} \arrow[]{d}{s} \arrow[]{dr}{t} &
+		{} \\
+		Fn \arrow[]{r}{Ff}&
+		Fm
+	\end{tikzcd}
+\]
+commutes.
+
+We hope to show that there is a bi-category $\cat{F\t{-}Cospan(Set)}$ with
+\begin{enumerate}
+	\item $0$-cells: finite sets,
+	\item $1$-cells: iso-classes of $F$-decorate co-spans between sets, and
+	\item $2$-cells: derivations $Fn_{\bullet} \Rightarrow Fm_{\bullet}$ via DPO graph transformations.
+\end{enumerate}
+
+Brendan has already shown that $\cat{F\t{-}Cospan(Set)}$ is a (hyper-graph) category with respect to the $0$-cells and $1$ cells.  Here, the composition of $1$-cells 
+\[
+	(x \to n \unto y , \{\bullet\} \xto{s} Fn ) ; (y \to m \unto z , \{\bullet\} \xto{t} Fm
+)
+\]
+is the pair $(x \to n +_y m \unto y , \{ \bullet \} \to F(n +_y m))$ where 
+\begin{itemize}
+	\item $n +_y m$ is a pushout obtained from the diagram
+\[
+	\begin{tikzcd}[row sep = tiny,column sep = tiny]
+		{} &
+		{} &
+		n +_y m	&
+		{} &
+		{} \\
+		{} &
+		n \arrow[]{ur}{ } &
+		{} &
+		m \arrow[]{ul}{ } &
+		{} \\
+		x	\arrow[]{ur}{ } &
+		{} &
+		y \arrow[]{ul}{j} \arrow[]{ur}{k}&
+		{}&
+		z \arrow[]{ul}{ }
+	\end{tikzcd}
+\]  
+	\item the map $\{\bullet\} \to F(n +_y m)$ is the composite
+\[
+	\{\bullet\} \xto{\sigma^{-1}}
+	\{\bullet\} \times \{\bullet\} \xto{(s,t)}
+	Fn \times Fm \xto{\theta}
+	F(n + m) \xto{F[j,k]}
+	F(n +_y m) 
+\]
+where 
+\begin{itemize}
+	\item $\sigma$ is the unit from the monoidal structure (here it's the diagonal)
+	\item $(s,t)$ is the product of the maps from the $F$-decorated cospans we are composing (here it picks out the corresponding graphs in $Fn$ and $Fm$,
+	\item $\theta$ comes from the monoidalness of the functor $F$ (here is coproducts the chosen graphs in $Fn$ and $Fm$,,
+	\item $F[j,k]$ is the image of the co-pairing of $j,k$ under $F$ (here it amalgamates the graph under $(y,j,k)$. 
+\end{itemize}
+\end{itemize}
+
+%--------------DEFINITION OF BICATEGORY--------------
+
+\section*{Bicategory Definition}
+
+Recall that a \define{bi-category} $\cat{C}$ consists of the data:
+\begin{itemize}
+	\item collection of $0$-cells,
+	\item for each pair $x,y$ of $0$-cells, a category $\cat{C} (x,y)$ whose objects, we call $1$-cells and morphisms we call $2$-cells,
+	\item a functor $\op{id}_x \from \cat{1} \to \cat{C} (x,x)$ (i.e.\ a $1$-cell) that will represent an identity of for $1$-cells and $2$-cells which we will denote by $\cat{1}$ and use context to determine which identity we mean, and
+	\item a functor $\circ_{x,y,z}$
+\begin{align*}
+	\cat{C} (x,y) \times \cat{C} (y,z) & \to \cat{C} (x,y) & \\
+	(f,g) & \mapsto f;g & (\t{on } 1-\t{cells}) \\
+	(\alpha, \beta) & \mapsto \alpha \ast \beta & (\t{on } 1-\t{cells})
+\end{align*}
+which is described by the diagram
+\[
+\begin{tikzcd}
+x 
+\ar[bend left=50]{r}[name=UL]{f}
+\ar[bend right=50]{r}[name=BL,swap]{f'} &
+y 	
+\ar[bend left=50]{r}[name=UR]{g} 
+\ar[bend right=50]{r}[name=BR,swap]{g'} &
+z 
+\ar[shorten <=3pt, shorten >=3pt,Rightarrow,to path={(UL) -- node[label=right:$\alpha$] {} (BL)}]{}
+\ar[shorten <=3pt, shorten >=3pt,Rightarrow,to path={(UR) -- node[label=right:$\beta$] {} (BR)}]{}
+\end{tikzcd}
+\]
+	\item Natural Isomorphisms 
+\[
+	\begin{tikzcd}[column sep=huge]
+		\cat{C}(w,x) \times \cat{C} (x,y) \times \cat{C} (y,z) 
+			\arrow[]{r}{\circ_{w,x,y} \times \cat{C} (y,z)} 
+			\arrow[swap]{d}{\cat{C}(w,x) \times \circ_{x,y,z}} 
+			&
+		\cat{C} (w,y) \times \cat{C} (y,z) 
+			\arrow[]{d}{\circ_{w,y,z}} 
+			\\
+		\cat{C} (w,x) \times \cat{C} (x,z) 
+			\arrow[swap]{r}{\circ_{w,x,z}}
+			\arrow[Rightarrow,shorten <=15pt, shorten >=15pt]{ur}{\alpha_{w,x,y,z}}
+			&
+		\cat{C} (w,z)
+	\end{tikzcd}
+\]
+\[
+	\begin{tikzcd}
+		\cat{C}(x,y) \times \cat{1}
+			\arrow[]{rd}{\cong}
+			\arrow[swap]{d}{\cat{C}(x,y) \times id_y}
+			&
+		{}
+			\\
+		\cat{C}(x,y) \times \cat{C}(y,y)
+			\arrow[swap]{r}{\circ_{x,y,y}}
+			\arrow[Rightarrow, shorten <=3pt, shorten >=50pt]{ur}[near start]{r_{x,y}}
+			&
+		\cat{C} (x,y)
+	\end{tikzcd}
+	\begin{tikzcd}
+		\cat{1} \times \cat{C}(x,y)
+			\arrow[]{rd}{\cong}
+			\arrow[swap]{d}{id_y \times \cat{C}(x,y)}
+			&
+		{}
+			\\
+		\cat{C}(x,x) \times \cat{C}(x,y)
+			\arrow[swap]{r}{\circ_{x,x,y}}
+			\arrow[Rightarrow, shorten <=3pt, shorten >=50pt]{ur}[near start]{\ell_{x,y}}
+			&
+		\cat{C} (x,y)
+	\end{tikzcd}
+\]
+which are $2$-cells 
+\begin{align*}
+	& \alpha_{f,g,h} \from (f;g);h \xto{\cong} f;(g;h), \\ 
+	& r_f \from \cat{1} ; f \xto{\cong} f, \t{and} \\
+	& \ell_f \from f ; \cat{1} \xto{\cong} f
+\end{align*}
+	\item with the axioms that the following diagrams commute:
+\[
+	\begin{tikzcd}
+		f;(g;(h;k)) 
+			\arrow[]{rr}{1 \ast \alpha}
+			\arrow[]{d}{\alpha}
+			&
+		{} 
+			&
+		f;((g;h);k) 
+			\arrow[]{d}{\alpha}
+			\\
+		(f;g)(h;k) 
+			\arrow[]{dr}{\alpha}
+			&
+		{} 
+			&
+		((f;g);h);k
+			\arrow[]{dl}{\alpha \ast 1}
+			\\
+		{}
+			&
+		(f;(g;h));k
+			&
+		{}
+	\end{tikzcd}
+\]
+\[
+	\begin{tikzcd}
+		f;(\t{id};g)
+			\arrow[]{d}{\alpha}
+			\arrow[]{dr}{\cat{1} \ast \ell}
+			&
+		{}
+			\\
+		(f;\t{id});g
+			\arrow[]{r}{r \ast \cat{1}}
+			&
+		f;g		
+	\end{tikzcd}
+\]
+\end{itemize}	
+
+%-----------DPO GRAPH REWRITING--------
+
+\section*{DPO Graph Rewriting}
+
+Here we describe DPO graph rewriting.  Start with a \define{production}, or a span $L \unto K \to R$ of graphs where the left-hand morphism is an inclusion.  Given such a production, a graph morphism $L \to G$ is called a \define{matching morphism}.  Now, starting with a production and a compatible matching morphism, we can complete the diagram
+\begin{equation} \label{diag:ProdNMatch}
+	\begin{tikzcd}
+		L \arrow[]{d}{g} &
+		K \arrow[]{l}{} \arrow[]{r}{}&
+		R \\
+		G
+	\end{tikzcd}
+\end{equation}
+to a double pushout
+\begin{equation} \label{diag:DPO}
+	\begin{tikzcd} 
+		L \arrow[]{d}{} &
+		K \arrow[]{l}{} \arrow[]{r}{} \arrow[]{d}{}&
+		R \arrow[]{d}{} \\
+		G  &
+		D \arrow[]{l}{} \arrow[]{r}{} &
+		G'
+	\end{tikzcd}
+\end{equation}
+with the following process:
+\begin{enumerate}
+	\item Start with a compatible production and matching morphism as in \eqref{diag:ProdNMatch}.  Check
+		\begin{itemize}
+			\item \textit{(Dangling Condition)} that there is no edge in $G \sm g(L)$ incident to a node in $g(L) \sm g(K)$, and
+			\item \textit{(Identification Condition)} that, given distinct nodes or edges $x,y \in L$, we have $g(x) = g(y)$ only if $x,y \in K$.
+		\end{itemize}
+	\item Construct $D$ by removing $g(L) \sm g(K)$ from $G$ and let $K \to D$ be the restriction of $g$ and $D \to G$ be the inclusion.
+	\item Let $G'$ be the pushout of $D \unto K \to R$.
+\end{enumerate}
+Thus we have obtained \eqref{diag:DPO}. If we denote the span $L \unto K \to R$ by $p$, we say $G'$ is a \define{direct derivation} of $G$, writen $G \Rightarrow_p G'$, if the inside squares in \eqref{diag:DPO} are graph pushouts. Let $P$ be a collection of productions.  Then a graph $H$ is a \define{derivation} of $G$ is there are $p_1, \dotsc, p_k$ in $P$ and graphs $G_1, \dotsc, G_{k-1}$ such that $G \Rightarrow_{p_1} G_1 \Rightarrow_{p_2} \dotsm G_{k-1}\Rightarrow_{p_k} H$.  Denote this by $G \Rightarrow_P H$.
+
+We will consider the tradition approach to DPO graph transformations which requires that the right-hand morphism $K \to R$ is injective and the matching morphism can be arbitrary.  
+
+
+
+
+%----------CENTRAL IDEA-------------
+
+\section*{Central Idea}
+
+Given a pair of finite sets $x,y$, we want to form a category $\cat{FinSet}(x,y)$ whose objects are $F$-decorated co-spans and morphisms come from DPO graph transformations.  So, let's fix a set of productions $P = \{ L \to K \unto R \}$ and construct a graph  whose nodes are the $F$-decorated co-spans (which can be unambiguously denoted by $Fn_{k})$ which is a graph in the set $Fn$ of graphs with nodes $n$ and we use number $k$ to distinguish between different graphs on the same set $n$ of nodes) and edges $Fn_0 \to Fm_0$ whenever $Fn_0 \Rightarrow_P Fm_0$. Define $\cat{FinSet}(x,y)$ to be the free category on this graph.  
+
+%----------THE DIRTY DETAILS-----------
+
+\section*{The Dirty Details}
+
+It remains to show that the axioms for a bicategory are satisfied.        
+
+
+
+
+
+
+
+
+
+
+
+	
+\end{document}

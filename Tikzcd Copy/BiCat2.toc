@@ -1,0 +1,9 @@
+\contentsline {section}{\tocsection {}{1}{Introduction}}{1}{section.1}
+\contentsline {section}{\tocsection {}{2}{Spans of cospans}}{2}{section.2}
+\contentsline {subsection}{\tocsubsection {}{2.1}{Spans of cospans and their compositions}}{3}{subsection.2.1}
+\contentsline {subsection}{\tocsubsection {}{2.2}{The interchange law}}{4}{subsection.2.2}
+\contentsline {section}{\tocsection {}{3}{A discussion on the assumptions}}{9}{section.3}
+\contentsline {section}{\tocsection {}{4}{The bicategory}}{11}{section.4}
+\contentsline {section}{\tocsection {}{5}{An Informal Introduction to Graph Rewriting}}{11}{section.5}
+\contentsline {section}{\tocsection {}{6}{Conclusion and further work}}{13}{section.6}
+\contentsline {section}{\tocsection {}{}{References}}{13}{section*.2}

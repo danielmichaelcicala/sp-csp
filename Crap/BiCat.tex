@@ -1,0 +1,3586 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+
+%--------------- LOAD PACKAGES -------------------------
+
+\RequirePackage{amsfonts}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{comment}
+\RequirePackage{stmaryrd}
+\RequirePackage{etoolbox}
+\RequirePackage{mathtools}
+\RequirePackage{amsmath}
+\RequirePackage{mdwlist}
+\RequirePackage{mathrsfs}
+\RequirePackage{enumitem}
+\setlist{itemsep=0em, topsep=0em, parsep=0em}
+\setlist[enumerate]{label=(\alph*)}
+\RequirePackage{tikz, tikz-cd}
+\usetikzlibrary{matrix,arrows}
+\RequirePackage{multicol}
+\RequirePackage{arydshln,leftidx}
+\RequirePackage[breaklinks,hidelinks]{hyperref}
+\hypersetup{colorlinks,linkcolor={blue}}
+\RequirePackage{subfiles}
+\RequirePackage{makeidx}
+\RequirePackage{multirow}
+\RequirePackage{graphicx}
+\RequirePackage[all]{xy}
+
+%------------------ NEW COMMANDS -----------------------
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\renewcommand{\epsilon}{\varepsilon}
+
+\newcommand{\entry}[1]{\section*{#1} \index{#1} \label{#1}}
+\newcommand{\cat}[1]{\mathtt{#1}}
+\newcommand{\define}[1]{\emph{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\scr}[1]{\mathscr{#1}}
+\newcommand{\op}[1]{\operatorname{#1}}
+\renewcommand{\t}[1]{\textup{#1}}
+\renewcommand{\and}{\textup{ and }}
+
+\newcommand{\from}{\colon}
+\newcommand{\xto}[1]{\xrightarrow{#1}}
+\newcommand{\unto}{\leftarrow}
+\newcommand{\xunto}[1]{\xleftarrow{#1}}
+\newcommand{\sm}{\smallsetminus}
+\renewcommand{\(}{\left(}
+\renewcommand{\)}{\right)}
+\renewcommand{\ss}[2]{_{#1}^{#2}}
+\renewcommand{\{}{\left\lbrace}
+\renewcommand{\}}{\right\rbrace}
+\renewcommand{\hat}{\widehat}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\bar}{\overline}
+
+
+%-------------- DECLARE MATH OPERATORS ------------------
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\arr}{arr}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Bij}{Bij}
+
+%--------- ENVIRONMENTS BEYOND CLASS FILE -----------------
+
+\renewcommand{\thesection}
+
+\newtheorem*{thm}{Theorem}
+\newtheorem*{lem}{Lemma}
+\newtheorem*{prop}{Proposition}
+\newtheorem*{cor}{Corollary}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{notation}{Notation}
+
+\theoremstyle{definition}
+\newtheorem*{ex}{Example} 
+\newtheorem*{defn}{Definition}
+
+%-------------- BIBLIOGRAPHY STYLE / INDEX ---------------------
+
+\bibliographystyle{plain}
+\makeindex
+
+
+\begin{document}
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Is this thing a bi-category?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The bi-category we're interested in is loosely described as a having sets as $0$-cells, co-spans as $1$-cells, and double-monic spans of co-spans as $2$-cells.  What is this $2$-cell? Given a couple of parallel spans
+\[
+	\begin{tikzcd}
+		{} &
+		{y} &
+		{} \\
+		{x} 
+			\ar[ru]
+			\ar[rd] &
+		{} &
+		{z} 
+			\ar[lu]
+			\ar[ld] \\
+		{} &
+		{y'} &
+		{} \\
+	\end{tikzcd} 
+\]
+from $x$ to $z$ (or from $z$ to $x$) a span of these co-spans is a \textit{double-monic span} $y \leftarrowtail w \rightarrowtail y'$ (i.e. both legs are monic) and maps $x,z \to w$ such that
+\[
+\begin{tikzcd}
+		{} &
+		{y} 
+			\ar[d,rightarrowtail]&
+		{} \\
+		{x} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{w} &
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{y'} 
+			\ar[u,rightarrowtail]&
+		{} \\
+	\end{tikzcd} 
+\]
+commutes.  So that's the gist...let's formally show this is a bi-category.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The objects of our bi-category is sets.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{The hom-categories}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Here we describe the hom-categories of our bi-category. Take a couple of sets $x,y$.  Define a category $\hom (x,y)$ as where
+\begin{itemize}
+	\item the objects are isomorphism classes (in the usual sense) of spans $x \leftarrow z \rightarrow y$ for any set $z$, up to isomorphism
+	\item the maps are co-spans of spans as described above, up to iso.
+\end{itemize}
+Composition of the maps is given by pullback. The identity maps are spans $z \xleftarrow{\id} z \xrightarrow{\id} z$. Associativity follows because, given composable maps $f,g,h$, both $(fg)h$ and $f(gh)$ are limits to the same diagram, so isomorphic.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Composition Functor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Given sets $x,y,z$ we define a functor
+\[
+	\otimes \from 
+		\hom (x,y) \otimes \hom (y,z) \to \hom (x,z).
+\]
+Sending a pair of co-spans ($1$-cells) to their typical composition via pushout.  Given a pair of $2$-cells (spans of co-spans stuck together)
+\[
+	\begin{tikzcd}
+		{} &
+		{t'} & 
+		{} &
+		{s'} &
+		{} \\
+		{x} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{t}
+			\ar[d, rightarrowtail]
+			\ar[u, rightarrowtail] & 
+		{y} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{s} 
+			\ar[d, rightarrowtail]
+			\ar[u, rightarrowtail] &
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{t''} & 
+		{} &
+		{s''} &
+		{} \\
+	\end{tikzcd}
+\]
+we let $\otimes$ send those to
+\[
+	\begin{tikzcd}
+		{} &
+		{t'+_y s'} &
+		{} \\
+		{x} 
+			\ar[ur] 
+			\ar[r]
+			\ar[dr] &
+		{t +_y s} 
+			\ar[u, rightarrowtail]
+			\ar[d, rightarrowtail] &
+		{z} 
+			\ar[ul]
+			\ar[l]
+			\ar[dl] \\
+		{} &
+		{t'' +_y s''} &
+		{} \\
+	\end{tikzcd}
+\]
+Why are the maps $t+_y s \to t' +_y s', t'' +_y s''$ monic? This follows from part \ref{Lem:Claim2} of the helpful little lemma below. I guess we should actually show this is a functor.
+
+What's it do on the identities? 
+\[
+	\begin{tikzcd}
+		{} &
+		{t} & 
+		{} &
+		{s} &
+		{} \\
+		{x} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{t}
+			\ar[d, "\id"]
+			\ar[u, swap, "\id"] & 
+		{y} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{s} 
+			\ar[d, "\id"]
+			\ar[u, swap, "\id"] &
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{t} & 
+		{} &
+		{s} &
+		{} \\
+	\end{tikzcd}
+	\mapsto
+	\begin{tikzcd}
+		{} &
+		{t+_y s} &
+		{} \\
+		{x} 
+			\ar[ur] 
+			\ar[r]
+			\ar[dr] &
+		{t +_y s} 
+			\ar[u, ,swap, "\id"]
+			\ar[d, "\id"] &
+		{z} 
+			\ar[ul]
+			\ar[l]
+			\ar[dl] \\
+		{} &
+		{t'' +_y s''} &
+		{} \\
+	\end{tikzcd}
+\]
+
+Is composition preserved?  Yes.  See the section on the interchange law below.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Identity functor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Pick any old object $x$ and define a functor $I \from \mathbf{1} \to \hom (x,x)$ by picking out the $1$-cell and $2$-cell
+\[
+		\begin{tikzcd}
+			{} &
+			{x} &
+			{} \\
+			{x} 
+				\ar[ur] 
+				\ar[r]
+				\ar[dr] &
+			{x} 
+				\ar[u,]
+				\ar[d,] &
+			{x} 
+				\ar[ul]
+				\ar[l]
+				\ar[dl] \\
+			{} &
+			{x} &
+			{} \\
+		\end{tikzcd}
+\]
+with only identity maps. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Associators and unitors}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Associator}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The associator is a natural isomorphism
+\[
+	\begin{tikzcd}
+		{\hom (w,x) \times \hom (x,y) \times \hom (y,z) } 
+			\ar[d,"\id \times \otimes"] 
+			\ar[r,"\otimes \times \id"] &
+		{\hom (w,y) \times \hom (y,z) } 
+			\ar[d, "\otimes"] \\
+		{\hom (w,x) \times \hom (x,z)} 
+			\ar[r,"\otimes"] 
+			\ar[ru, shorten <= 2em, shorten >= 2em, Rightarrow, "\alpha"]&
+		{\hom (w,z)} \\
+	\end{tikzcd}
+\]
+This will show that, given something like
+\[	
+	\begin{tikzcd}
+		{} &
+		{t'} & 
+		{} &
+		{s'} &
+		{} &
+		{r'} &
+		{} \\
+		{w} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{t}
+			\ar[d, rightarrowtail]
+			\ar[u, rightarrowtail] & 
+		{x} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{s} 
+			\ar[d, rightarrowtail]
+			\ar[u, rightarrowtail] &
+		{y} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{r} 
+			\ar[u, rightarrowtail]
+			\ar[d, rightarrowtail] &
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{t''} & 
+		{} &
+		{s''} &
+		{} &
+		{r''} &
+		{} \\
+	\end{tikzcd}
+\]
+the two different ways of composing the $2$-cells are naturally isomorphic.  But this follows from the properties of pushouts.  I suppose we should actually spell it out though.  The natural transformation $\alpha$ is indexed by $1$-cells (i.e. objects in $\hom (w,x) \times \hom (x,y) \times \hom (y,z)$), which are triples of iso-classes of spans. So if $L = \otimes \times \id ; \otimes$ and $R = \id \times \otimes ; \otimes$ (from the above diagram), we have a situation like the following to define $\alpha$: 
+\[
+	\begin{tikzcd}[column sep=.5em]
+	 {} &
+	 {a} &
+	 {} &
+	 {a'} &
+	 {} &
+	 {a''} &
+	 {} \\
+	 {w} 
+		 \ar[ru]&
+	 {} &
+	 {x} 
+		 \ar[lu]
+		 \ar[ru] &
+	 {} &
+	 {y} 
+		 \ar[lu]
+		 \ar[ru] &
+	 {} &
+	 {z}
+		 \ar[lu] 
+	\end{tikzcd}
+	\begin{tikzcd}
+		{} 
+			\ar[r,bend left=70, "L"{name=L}]
+			\ar[r,bend right=70,swap, "R"{name=R}] &
+		{}
+			\ar[Rightarrow,from=L,to=R, "\alpha"]
+	\end{tikzcd}
+	\begin{tikzcd}[column sep=.5em]
+		{} &
+		{(a +_x a') +_y a''} &
+		{} \\
+		{w} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{a +_x a' +_y a''} 
+			\ar[u,"\cong"]
+			\ar[d, "\cong"] &
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{a +_x (a' +_y a'')} &
+		{} 
+	\end{tikzcd}
+\]
+We still need to show that this is natural.  Suppose we have a morphism $f \from A \to B$ in this product hom-category, which is depicted as
+\[
+	\begin{tikzcd}
+		{} & 
+		{a} &
+		{} &
+		{a'} &
+		{} &
+		{a''} &
+		{} \\
+		{w} 
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] & 
+		{c} 
+			\ar[u, rightarrowtail]
+			\ar[d, rightarrowtail] &
+		{x} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{c'} 
+			\ar[u, rightarrowtail]
+			\ar[d, rightarrowtail]&
+		{y} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{c''} 
+			\ar[u, rightarrowtail]
+			\ar[d, rightarrowtail]&
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} & 
+		{b} &
+		{} &
+		{b'} &
+		{} &
+		{b''} &
+		{} \\
+	\end{tikzcd}
+\]
+ where $A$ is the spans comprising the top part and $B$ the spans comprising the bottom part and $f$ is the obvious stuff.  We need to show that
+ \begin{equation} \label{AsscUnit:Diag:Nat}
+	 \begin{tikzcd} 
+		 {LA} 
+			 \ar[r, "\alpha_A"] 
+			 \ar[d, "Lf"]&
+		 {RA} 
+			 \ar[d, "Rf"]\\
+		 {LB} 
+			 \ar[r, "\alpha_B"]&
+		 {RB}
+	 \end{tikzcd}
+\end{equation}
+commutes.  The bottom path $Lf;\alpha_B$ of \eqref{AsscUnit:Diag:Nat} is given by
+\[
+	\begin{tikzcd}
+		{} &
+		{(a +_x a') +_y a''} &
+		{} \\
+		{} &
+		{(c +_x c') +_y c''} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{w} 
+			\ar[ruu] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd] &
+		{(b +_x b') +_y b''} &
+		{z} 
+			\ar[luu] 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd] &\\
+		{} &
+		{b +_x b' +_y b''} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{} &
+		{b +_x (b' +_y b'')} &
+		{} 
+	\end{tikzcd}
+\]
+whose vertical composition is given by
+\[
+	\begin{tikzcd}
+		{} &
+		{(a +_x a') +_y a''} &
+		{} \\
+		{w} 
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{((c+_xc')+_yc'') \times_{(b+_xb')+_yb''}(b+_xb'+_yb'') } 
+			\ar[u]
+			\ar[d]&
+		{z} 
+			\ar[lu] 
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{b +_x (b' +_y b'')} &
+		{} 
+	\end{tikzcd}
+\]
+The upper path $\alpha_A ; Rf$ of \eqref{AsscUnit:Diag:Nat} is described by the diagram
+\[
+\begin{tikzcd}
+	{} &
+	{(a +_x a') +_y a''} &
+	{} \\
+	{} &
+	{a +_x a' +_y a''} 
+		\ar[u]
+		\ar[d] &
+	{} \\
+	{w} 
+		\ar[ruu] 
+		\ar[ru]
+		\ar[r]
+		\ar[rd]
+		\ar[rdd] &
+	{a +_x (a' +_y a'')} &
+	{z} 
+		\ar[luu] 
+		\ar[lu]
+		\ar[l]
+		\ar[ld]
+		\ar[ldd] &\\
+	{} &
+	{c +_x (c' +_y c'')} 
+		\ar[u]
+		\ar[d] &
+	{} \\
+	{} &
+	{b +_x (b' +_y b'')} &
+	{} 
+	\end{tikzcd}
+\]
+whose vertical composition is given by
+\[
+	\begin{tikzcd}
+		{} &
+		{(a +_x a') +_y a''} &
+		{} \\
+		{w} 
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{(a+_xa'+_ya'') \times_{a+_x(a'+_ya'')}(c+_x(c'+_yc'')) } 
+			\ar[u]
+			\ar[d]&
+		{z} 
+			\ar[lu] 
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{b +_x (b' +_y b'')} &
+		{} 
+	\end{tikzcd}
+\]
+What we need now to show is the existence of an isomorphism of sets 
+\[
+	\theta \from C_L \times_{B_L} B \to A \times_{A_R} C_R
+\] 
+where $C_L \times_{B_L} B :=((c+_xc')+_yc'') \times_{(b+_xb')+_yb''}(b+_xb'+_yb'')$ and $A \times_{A_R} C_R := (a+_xa'+_ya'')\times_{a+_x(a'+_ya'')}(c+_x(c'+_yc''))$
+such that you get a commuting diagram (which I won't tex up but it has the frames of the previous diagram and two before that with $\theta$ between the middle.) But this isn't too hard to visualize what's going on here.  Notice that $C_L \times_{B_L} B \cong C_L$ since $C_L \times_{B_L} B$ has elements sort of like $(c^L_0,b_0)$ where $b_0$ is determined uniquely by $c^L_0$ because of the monos from $c,c',c'' \to b,b',b''$ and $b_0$ is the image of $c_0$.  By the definition of a pull back, these are the only elements we need to worry about.  Similarly, $A \times_{A_R} C_R \cong C_R$, which has elements like $(a_0,c^R_0)$ where $a_0$ is completely determined by $c^R_0$. There is an organic iso between $C_L$ and $C_R$ associating $c^L_0$ and $C^R_0$ and so $\theta$ can be given a map like $(c^L_0,b_0) \mapsto (a_0,c^R_0)$, which should do the trick.  This is completely hand wavy, but I'm confident it's the way to go, so I'll move on with my life now and formalize this only when needed.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Unitors}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We also need the left and right unitors.  Left first.  We need a natural isomorphism 
+\[
+	\begin{tikzcd}
+		{\hom (x,y) \times \mathbf{1}} 
+			\ar[d, swap, "\id \times I"] 
+			\ar[dr, "\cong"]&
+		{} \\
+		{\hom (x,y) \times \hom (y,y)} 
+			\ar[r, swap, "\otimes"] 
+			\ar[ru, Rightarrow,  shorten >=6em, "r", pos=.15] &
+		{\hom (x,y)}
+	\end{tikzcd}
+\]
+which can be defined in the obvious way using properties of pushouts.  But, I suppose we should just spell it out a bit.
+
+The functor $\id \times I$ behaves like
+\[
+	\left(
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{a} &
+		{} \\
+		{x}
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{b} 
+			\ar[u]
+			\ar[d]&
+		{y}
+			\ar[lu]
+			\ar[l]
+			\ar[ld]\\
+		{} &
+		{c} &
+		{} 
+	\end{tikzcd},
+	\begin{tikzcd}
+		{\bullet} \ar[loop right]
+	\end{tikzcd}
+	\right) 
+	\mapsto
+	\left(
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{a} &
+		{} \\
+		{x}
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{b} 
+			\ar[u]
+			\ar[d]&
+		{y}
+			\ar[lu]
+			\ar[l]
+			\ar[ld]\\
+		{} &
+		{c} &
+		{} 
+	\end{tikzcd},
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{y} &
+		{} \\
+		{y}
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{y} 
+			\ar[u]
+			\ar[d]&
+		{y}
+			\ar[lu]
+			\ar[l]
+			\ar[ld]\\
+		{} &
+		{y} &
+		{} 
+	\end{tikzcd}
+	\right).
+\]
+So the composite functor $(\id \times I); \otimes$ is given by 
+\[
+	\left(
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{a} &
+		{} \\
+		{x}
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{b} 
+			\ar[u]
+			\ar[d]&
+		{y}
+			\ar[lu]
+			\ar[l]
+			\ar[ld]\\
+		{} &
+		{c} &
+		{} 
+	\end{tikzcd},
+	\begin{tikzcd}
+		{\bullet} \ar[loop right]
+	\end{tikzcd}
+	\right) 
+	\mapsto
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{a +_y y} &
+		{} \\
+		{x}
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{b +_y y} 
+			\ar[u]
+			\ar[d]&
+		{y}
+			\ar[lu]
+			\ar[l]
+			\ar[ld]\\
+		{} &
+		{c +_y y} &
+		{} 
+	\end{tikzcd}
+\]
+Now let's define $r$. Denote the object $\left( x \rightarrow a \leftarrow y , \bullet \right)$ in $\hom (x,y) \times \mathbf{1}$ by $X$.  Then $r_X$ is a morphism in $\hom (x,y)$ from 
+\[
+	\id \times I (X) 
+		= (x \to a +_y \leftarrow y)
+\]
+to
+\[
+	\tilde{X} = (x \to a \leftarrow y).
+\]
+Let's define $r_X$ by
+\[
+		\begin{tikzcd}[column sep=1em,row sep=1em]
+			{} &
+			{a +_y y} &
+			{} \\
+			{x}
+				\ar[ru] 
+				\ar[r]
+				\ar[rd] &
+			{a} 
+				\ar[u]
+				\ar[d]&
+			{y}
+				\ar[lu]
+				\ar[l]
+				\ar[ld]\\
+			{} &
+			{a} &
+			{} 
+		\end{tikzcd}
+\]
+where $a \to a$ is identity and $a \to a+_yy$ is the unique isomorphism obtained from the fact that both $a$ and $a+_yy$ are pushouts of $a \leftarrow y \xrightarrow{\id} y$
+
+We still have naturality to deal with.  Denoting a co-span by its apex, consider a map $f \from a \leftarrow c \to b$ in $\hom (x,y) \times \mathbf{1}$.  Also, let's write $U := "\cong"$ and $L := (\id \times I ; \otimes)$ for the functors.  Show that $r$ is natural boils down to showing that
+\[
+	\begin{tikzcd}
+		{La} 
+			\ar[r,"Lf"]
+			\ar[d,"r_a"] &
+		{Lb} 
+			\ar[d,"r_b"] \\
+		{Ua} 
+			\ar[r, "Uf"] &
+		{Ub} 
+	\end{tikzcd}
+\]
+commutes. Now, the upper path $Lf ; r_b$ is depicted by
+\[
+	\begin{tikzcd}[row sep=1em]
+		{} &
+		{a +_yy} &
+		{} \\
+		{} &
+		{c+_yy} 
+			\ar[u,rightarrowtail]
+			\ar[d,rightarrowtail] &
+		{} \\
+		{x} 
+			\ar[ruu] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd]&
+		{b+_yy} &
+		{y} 
+			\ar[luu]
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd] \\
+		{} &
+		{b} 
+			\ar[u,rightarrowtail]
+			\ar[d,rightarrowtail]&
+		{} \\
+		{} &
+		{b} &
+		{}
+	\end{tikzcd}
+	=
+	\begin{tikzcd}
+		{} &
+		{a+_yy} &
+		{} \\
+		{a} 
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{(c+_yy) \times_{b+_yy} (b)}
+			\ar[d]
+			\ar[u] &
+		{y} 
+			\ar[lu] 
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{b} &
+		{} 
+	\end{tikzcd}
+\]
+and the lower path is depicted by 
+\[
+	\begin{tikzcd}[row sep=1em]
+		{} &
+		{a +_yy} &
+		{} \\
+		{} &
+		{a} 
+			\ar[u,rightarrowtail]
+			\ar[d,rightarrowtail] &
+		{} \\
+		{x} 
+			\ar[ruu] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd]&
+		{a} &
+		{y} 
+			\ar[luu]
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd] \\
+		{} &
+		{c} 
+			\ar[u,rightarrowtail]
+			\ar[d,rightarrowtail]&
+		{} \\
+		{} &
+		{b} &
+		{}
+	\end{tikzcd}
+	=
+	\begin{tikzcd}
+		{} &
+		{a+_yy} &
+		{} \\
+		{a} 
+			\ar[ru] 
+			\ar[r]
+			\ar[rd] &
+		{a \times_{a} c}
+			\ar[d]
+			\ar[u] &
+		{y} 
+			\ar[lu] 
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{b} &
+		{} 
+	\end{tikzcd}
+\]
+Because of the monics, $a \times_c c \cong c$ and, since $c+_yy \cong c$ and $b+_yy \cong b$, we have that $(c+_yy) \times_{b+_yy} c \cong c \times_b b \cong c$.  So we can show everything works out.  This completes the right unitor stuff.
+
+The left unitor will be much of the same, so that's all I'll do for now.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Axioms}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Pentagon Identity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Take composable $1$-cells, $f;g;h;k$. The pentagon identity requires that 
+\[
+	\begin{tikzcd}
+		{((f;g);h);k} 
+			\ar[d, "\alpha"] 
+			\ar[rr, "\alpha \otimes 1"] &
+		{} &
+		{(f;(g;h));k} 
+			\ar[d, "\alpha"] \\
+		{(f;g);(h;k)} 
+			\ar[dr, "\alpha"] &
+		{} &
+		{f;((g;h);k)} 
+			\ar[dl, "1 \otimes \alpha"] \\
+		{} &
+		{f;(g;(h;k))} &
+		{}
+	\end{tikzcd}
+\]
+So let $f;g;h;k$ be the sequence of co-spans
+\[
+	\begin{tikzcd}[column sep=1em,row sep=1em]
+		{} &
+		{a} &
+		{} &
+		{b} &
+		{} &
+		{c} &
+		{} &
+		{d} &
+		{} \\
+		{v} 
+			\ar[ru]&
+		{} &
+		{w} 
+			\ar[lu]
+			\ar[ru]&
+		{} &
+		{x} 
+			\ar[lu]
+			\ar[ru]&
+		{} &
+		{y} 
+			\ar[lu]
+			\ar[ru]&
+		{} &
+		{z} 
+			\ar[lu]
+	\end{tikzcd}
+\]
+Below, we'll write $a+_wb+_xc+_yd$ and the various permutations of two brackets as $abcd$, that is suppressing the $+_{-}$ for simplicity. The map $(\alpha \otimes \id);\alpha;\alpha$ is given by
+\[
+	\begin{tikzcd}[row sep=1em]
+		{} &
+		{((ab)c)d} &
+		{} \\
+		{} &
+		{(abc)d} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{} &
+		{(a(bc))d} &
+		{} \\
+		{v} 
+			\ar[ruuu] 
+			\ar[ruu]
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd]
+			\ar[rddd] &
+		{a(bc)d} 
+			\ar[u]
+			\ar[d]&
+		{z} 
+			\ar[luuu] 
+			\ar[luu]
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd]
+			\ar[lddd]\\
+		{} &
+		{a((bc)d)} &
+		{} \\
+		{} &
+		{a(bcd)} 
+			\ar[u]
+			\ar[d]&
+		{} \\
+		{} &
+		{a(b(cd))} &
+		{} 
+	\end{tikzcd}
+\]
+which, after you compose everything, becomes 
+\[
+	\begin{tikzcd}
+		{} &
+		{((ab)c)d} &
+		{} \\
+		{v} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{\left( (abc)d \times_{(a(bc))d} a(bc)d \right) \times_{a((bc)d)} a(bcd) } 
+			\ar[u]
+			\ar[d]&
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+		{a(b(cd))} &
+		{} \\
+	\end{tikzcd}
+\]
+Now the map $\alpha; \alpha$ is given by
+\[
+	\begin{tikzcd}
+		{} &
+		{((ab)c)d} &
+		{} \\
+		{} &
+		{(ab)cd} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{v} 
+			\ar[ruu] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd] &
+		{(ab)(cd)} &
+		{w} 
+			\ar[luu] 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd]\\
+		{} &
+		{ab(cd)} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{} &
+		{abcd} &
+		{}
+	\end{tikzcd}
+\]
+which composes to
+\[
+	\begin{tikzcd}
+		{} &
+		{((ab)c)d} &
+		{} \\
+		{v} 
+			\ar[ru]
+			\ar[r]
+			\ar[rd] &
+		{(ab)cd \times_{(ab)(cd)} ab(cd)}
+			\ar[u]
+			\ar[d]&
+		{z} 
+			\ar[lu]
+			\ar[l]
+			\ar[ld] \\
+		{} &
+			{a(b(cd))} &
+		{} 
+	\end{tikzcd}
+\]
+Now, since pullbacks over co-spans $A \to B \leftarrow C$ are isomorphic to $B$ is $A \cong B \cong C$, we have a unique isomorphism between $(ab)cd \times_{(ab)(cd)} ab(cd)$ and $\left( (abc)d \times_{(a(bc))d} a(bc)d \right) \times_{a((bc)d)} a(bcd)$ since pushouts are naturally associative. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Triagnle Identity}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We need to show that
+\[
+	\begin{tikzcd}
+		{f(Ig)} 
+			\ar[rr,"\alpha"]
+			\ar[rd,"\id \otimes \ell"] &
+		{} &
+		{(fI)g} 
+			\ar[ld, "r \otimes \id"]\\
+		{} &
+		{fg} &
+		{}
+	\end{tikzcd}
+\]
+Take $fIg$ to be the co-spans
+\[
+	\begin{tikzcd}[column sep = 1em,row sep=1em]
+		{} &
+		{a} &
+		{} &
+		{y} &
+		{} &
+		{b} &
+		{} \\
+		{x} 
+			\ar[ur]&
+		{} &
+		{y} 
+			\ar[ur]
+			\ar[ul]&
+		{} &
+		{y} 
+			\ar[ur]
+			\ar[ul]&
+		{} &
+		{z}
+			\ar[ul]\\
+	\end{tikzcd}
+\]
+The map $1 \otimes \ell \from f(Ig) \to fg$ is given by
+\[
+	\begin{tikzcd}
+		{} &
+		{a +_y (y +_y b)} &
+		{} \\
+		{x} 
+			\ar[ur] 
+			\ar[r]
+			\ar[dr] &
+		{a +_y b} 
+			\ar[u]
+			\ar[d] &
+		{z} 
+			\ar[ul]
+			\ar[l]
+			\ar[dl] \\
+		{} &
+		{a +_y b} &
+		{}
+	\end{tikzcd}
+\]
+The composite $\alpha ; (r \otimes \id) \from f(Ig) \to fg$ is given by 
+\[
+	\begin{tikzcd}
+		{} &
+		{a+_y(y+_yb)} &
+		{} \\
+		{} &
+		{a+_y y+_yb} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{x} 
+			\ar[ruu] 
+			\ar[ru]
+			\ar[r]
+			\ar[rd]
+			\ar[rdd] &
+		{(a+_y y)+_yb} &
+		{z} 
+			\ar[luu] 
+			\ar[lu]
+			\ar[l]
+			\ar[ld]
+			\ar[ldd]\\
+			{} &
+		{a+_yb} 
+			\ar[u]
+			\ar[d] &
+		{} \\
+		{} &
+		{a+_yb} &
+		{}
+	\end{tikzcd}
+\]
+which composes to
+\[
+	\begin{tikzcd}
+		{} &
+		{a +_y (y +_y b)} &
+		{} \\
+		{x} 
+			\ar[ur] 
+			\ar[r]
+			\ar[dr] &
+		{(a +_y y +_y b) \times_{(a+_yy)+_yb} (a+_yb)} 
+			\ar[u]
+			\ar[d] &
+		{z} 
+			\ar[ul]
+			\ar[l]
+			\ar[dl] \\
+		{} &
+		{a +_y b} &
+		{}
+	\end{tikzcd}
+\]
+But $a+_y y +_y b \cong (a+_y y) +_y b \cong a+_y b$ so  the pullback in the above diagram is isomorphic to $a+_yb$. Which is what we want.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Interchange Law}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Diagram of Composition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{equation} \label{Diag:ToBeComposed}
+\xymatrix{
+	{} &
+	{} &
+	L+_YL' &
+	{} &
+	{} \\
+	{} &
+	L  
+	\ar[ru]|{\ell} &
+	{} &
+	L' 
+	\ar[lu]|{\ell}&
+	{} \\
+	{} &
+	T' 
+	\ar[u]|{t'_L}
+	\ar[d]|{t'_T} &
+	{} &
+	S' 
+	\ar[u]|{s'_{L'}}
+	\ar[d]|{s'_S}&
+	{} \\
+	X 
+	\ar[ruu]|{x_L}
+	\ar[ru]|{x_{T'}}
+	\ar[r]|{x_T}
+	\ar[rd]|{x_{T''}}
+	\ar[rdd]|{x_R}&
+	T &
+	Y 
+	\ar[luu]|{y_{L}}
+	\ar[lu]|{y_{T'}}
+	\ar[l]|{y_{T}}
+	\ar[ld]|{y_{T''}}
+	\ar[ldd]|{y_{R}}
+	\ar[ruu]|{y_{L'}}
+	\ar[ru]|{y_{S'}}
+	\ar[r]|{y_{S}}
+	\ar[rd]|{y_{S''}}
+	\ar[rdd]|{y_{R'}} &
+	S &
+	Z 
+	\ar[luu]|{z_{L'}}
+	\ar[lu]|{z_{S'}}
+	\ar[l]|{S}
+	\ar[ld]|{S''}
+	\ar[ldd]|{R'}\\
+	{} &
+	T'' 
+	\ar[u]|{t''_T}
+	\ar[d]{t''_R}&
+	{} &
+	S'' 
+	\ar[u]|{s''_S}
+	\ar[d]|{s''_{R'}}&
+	{} \\
+	{} &
+	R 
+	\ar[rd]|{r_+}
+	{} &
+	{} &
+	R' 
+	\ar[ld]|{r'_+} \\
+	{} &
+	{} &
+	R +_Y R' &
+	{} &
+	{}
+}	
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Vertical then Horizonal Composition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Let's go through the diagrams}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+
+First, we compose the 2-morphisms vertically via the pullbacks
+\begin{equation} \label{Diag:VH_VertCompPullbacks}
+\xymatrix{
+	T' \times_T T'' 
+	\ar[r]^-{p_{T''}}
+	\ar[d]^-{p_{T'}}   &
+	T'' \ar[d]^{t''_T}  \\
+	T' 
+	\ar[r]^{t'_T} &
+	T \\
+}
+%
+\xymatrix{
+	S' \times_S S'' 
+	\ar[r]^-{p_{S''}} 
+	\ar[d]^{p_{S'}}   &
+	S'' 
+	\ar[d]^{s''_S}  \\
+	S' 
+	\ar[r]^{s'_S} &
+	S
+}
+\end{equation}
+to obtain the composite 2-morphisms
+\begin{equation} \label{Diag:VH-VertCompResult}
+\xymatrix@C=1.75cm{
+	{} &
+	L &
+	{} \\
+	X 
+	\ar@/^/[ru]^{x_L}
+	\ar[r]|-{ \left[ x_{T'},x_{T''} \right] }
+	\ar@/_/[rd]_{x_R} &
+	T' \times_T T''
+	\ar[u]|{ p_{T'}t'_{L} }
+	\ar[d]|{ p_{T''}t''_{R} } &
+	Y 
+	\ar@/_/[lu]_{ y_L }
+	\ar[l]|-{ \left[ y_{T'},y_{T''} \right] }
+	\ar@/^/[ld]_{y_R} \\
+	{} &
+	R &
+}
+\xymatrix@C=1.75cm{
+	{} &
+	L' &
+	{} \\
+	Y 
+	\ar@/^/[ru]^{y_{L'}}
+	\ar[r]|-{\left[ y_{S'},y_{S''} \right]}
+	\ar@/_/[rd]_{y_{R'}} &
+	S' \times_S S''
+	\ar[u]|{p_{S'}s'_{L'}}
+	\ar[d]|{p_{S''}s''_{R'}} &
+	Z 
+	\ar@/_/[lu]_{z_{L'}}
+	\ar[l]|-{\left[ z_{S'},z_{S''} \right]}
+	\ar@/^/[ld]^{z_{R'}} \\
+	{} &
+	R' &
+	{} 
+}
+\end{equation}
+Then we horizontally compose the resulting composites  via the pushouts
+\begin{equation} \label{Diag:VH_HorCompPushouts_1}
+\xymatrix{
+	Y 
+	\ar[r]^{\left[y_{S'}, y_{S''} \right]}
+	\ar[d]_{\left[y_{T'}, y_{T''} \right]}   &
+	S' \times_S S''
+	\ar[d]^{i_{S}}  \\
+	T' \times_T T''
+	\ar[r]^-{i_T}  &
+	(T' \times_T T'') +_Y (S' \times_S S'')
+}
+\end{equation}
+\begin{equation} \label{Diag:VH_HowCompPushouts_2}
+\xymatrix{
+	Y 
+	\ar[r]^{y_{L'}} 
+	\ar[d]^{y_{L}} &
+	L' 
+	\ar[d]^{\ell} \\
+	L 
+	\ar[r]^-{\ell} &
+	L +_Y L'
+}
+%
+\xymatrix{
+	Y 
+	\ar[r]^{y_{R'}}
+	\ar[d]^{y_{R}} &
+	R' 
+	\ar[d]^{r} \\
+	R 
+	\ar[r]^-{r'} &
+	R +_Y R'
+}
+\end{equation}
+
+from which we obtain the composite
+\begin{equation} \label{Diag:VH_FinalComposite}
+	\xymatrix@C=1.25cm{
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{} \\
+		X 
+			\ar@/^/[rru]^{x_L \ell} 
+			\ar[rr]|(.3){\left[x_{T'},x_{T''} \right] i_T}
+			\ar@/_/[rrd]^{x_R r} &  
+		{} &
+		(T' \times_T T'') +_Y (S' \times_S S'') 
+			\ar[u]|{\left\langle  p_{T'}t'_{L}\ell,p_{S'}s'_{L'}\ell' \right\rangle} 
+			\ar[d]|{\left\langle  p_{T''}t''_{R}r,p_{S''}s''_{R'}r' \right\rangle} &
+		{} &
+		Z 
+			\ar@/_/[llu]_{z_{L'}\ell'}
+			\ar[ll]|(.3){\left[z_{S'},z_{S''} \right] i_S}
+			\ar@/^/[lld]^{z_{R'}r'} \\
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{}
+}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Horizontal then Vertical Composition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+
+We first compose the 2-morphisms horizontally using pushouts over $Y$.  So we first consider the pushout
+\begin{equation} \label{Diag:HV_T+_YSPushout}
+\xymatrix{
+		Y 
+			\ar[r]^{y_S}
+			\ar[d]^{y_T} &
+		S 
+			\ar[d]^{q_{S}} \\
+		T 
+			\ar[r]^-{q_{T}} &
+		T +_Y S
+}
+\end{equation}
+and then obtain a cospan $T'+_Y S' \rightarrow T +_Y S \leftarrow T'' +_Y S''$ using the universal property of the pushouts
+\begin{equation} \label{Diag:HV_MapsToT+_YSPushouts}
+	\xymatrix{
+		Y 
+			\ar[r]^{y_{S'}}
+			\ar[d]^{y_{T'}} &
+		S' 
+			\ar[d]^{q_{S'}} 
+			\ar@/^2pc/[ddr]^{s'_Sq_S} &
+		{}	\\
+		T' 
+			\ar[r]^-{q_{T'}} 
+			\ar@/_2pc/[drr]_{t'_Tq_T} &
+		T' +_Y S' 
+			\ar[dr]|{\left\langle t'_Tq_T, s'_Sq_S \right\rangle } &
+		{} \\
+		{} &
+		{} &
+		T +_Y S
+	}
+	%
+	\xymatrix{
+		Y 
+			\ar[r]^{y_{S''}} 
+			\ar[d]^{y_{T''}} &
+		S'' 
+			\ar[d]^{q_{S''}} 
+			\ar@/^2pc/[ddr]^{s''_Sq_S} &
+		{} \\
+		T'' 
+			\ar[r]^-{q_{T''}} 
+			\ar@/_2pc/[drr]_{t''_Tq_T} &
+		T'' +_Y S'' 
+			\ar[dr]|{\left\langle t''_Tq_T, s''_Sq_S \right\rangle } &
+		{} \\
+		{} &
+		{} &
+		T +_Y S
+	}
+\end{equation}
+We also obtain maps $T' +_Y S' \rightarrow L +_Y L'$ and $T'' +_Y S'' \rightarrow R +_Y R'$ via the pushouts
+\begin{equation} \label{Diag:HV_MapsToLRPushouts}
+	\xymatrix{
+		Y 
+			\ar[r]^{y_{S'}}
+			\ar[d]^{y_{T'}} &
+		S' 
+			\ar[d]^{q_{S'}} 
+			\ar@/^1pc/[ddr]^{s'_{L'}\ell'} &
+		{} \\
+		T' 
+			\ar[r]^-{q_{T'}}
+			\ar@/_1pc/[drr]_{t'_{L}\ell} &
+		T' +_Y S' 
+			\ar[dr]|{\left\langle s'_{L'}\ell', t'_{L}\ell  \right\rangle }&
+		{} \\
+		{} &
+		{} &
+		L +_Y L'
+	}
+	%
+	\xymatrix{
+		Y 
+			\ar[r]^{y_{S''}} 
+			\ar[d]^{y_{T''}} &
+		S'' 
+			\ar[d]^{q_{S''}} 
+			\ar@/^1pc/[ddr]^{s'_{L''}r'} &
+		{} \\
+		T'' 
+			\ar[r]^-{q_{T''}} 
+			\ar@/_1pc/[drr]_{t''_{L}r"} &
+		T'' +_Y S' 
+			\ar[dr]|{\left\langle s''_{R'}r', t''_{R}r  \right\rangle } &
+		{} \\
+		{} &
+		{} &
+		R +_Y R'
+	}
+\end{equation}
+Therefore, the horizontal composite of 2-morphisms on the top and bottom half of the initial diagram gives a diagram
+\begin{equation} \label{Diag:HV_HorComposite}
+	\xymatrix@R=1cm{
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{}  \\
+		{} &
+		{} &
+		T' +_Y S' 
+			\ar[u]|{\left\langle t'_{L}\ell, s'_{L'}\ell'  \right\rangle }
+			\ar[d]|{\left\langle t'_Tq_T, s'_Sq_S \right\rangle } &
+		{} &
+		{} \\
+		X 
+			\ar@/^1pc/[rruu]^{x_L \ell}
+			\ar[rru]^{x_{T'} q_{T'}}
+			\ar[rr]|{x_Tq_T}
+			\ar[rrd]_{x_{T''}q_{T''}}
+			\ar@/_1pc/[rrdd]_{x_Rr} &
+		{} &	
+		T +_Y S &
+		{} &	
+		Z 
+			\ar@/_/[lluu]_{z_{L'}\ell' }
+			\ar[llu]_{z_{S'}q_{S'}}
+			\ar[ll]|{z_Sq_S}
+			\ar[lld]^{z_{S''}q_{S'}}
+			\ar@/^/[lldd]^{z_{R'}r'} \\
+		{} &
+		{} &
+		T'' +_Y S'' 
+			\ar[u]|{\left\langle t''_Tq_T, s''_Sq_S \right\rangle }
+			\ar[d]|{\left\langle t''_{R}r,s''_{R'}r'  \right\rangle } &
+		{} &
+		{} \\	
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{} \\ 
+	}
+\end{equation}
+Now, we vertically compose the resulting 2-morphisms via the universal property of the pullback
+\begin{equation} \label{Diag:HV_XToPullback}
+	\xymatrix{
+		X
+			\ar@/^2pc/[rrd]^{x_{T''}q_{T''}}
+			\ar[rd]|{\left[ x_{T'}q_{T'} ,x_{T''}q_{T''} \right]}
+			\ar@/_2pc/[rdd]_{x_{T'}q_{T'}} &
+		{} &
+		{} \\
+		{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+			\ar[r]^-{\pi''_X} 
+			\ar[d]^{\pi'_X} &
+		T'' +_Y S'' 
+			\ar[d]|{\left\langle t''_Tq_T, s''_Sq_S \right\rangle } \\
+		{} &
+		T' +_Y S' 
+			\ar[r]|{\left\langle t'_Tq_T, s'_Sq_S \right\rangle } &
+		T +_Y S
+	}
+\end{equation}
+and similarly for $Z$
+\begin{equation} \label{ZToPullback}
+	\xymatrix{
+		Z
+				\ar@/^2pc/[rrd]^{z_{S''}q_{S''}}
+				\ar[rd]|{\left[ z_{S'}q_{S'} ,z_{S''}q_{S''} \right]}
+				\ar@/_2pc/[rdd]_{z_{S'}q_{S'}} &
+			{} &
+			{} \\
+			{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+			\ar[r]^-{\pi_Z''}
+			\ar[d]^{\pi_Z'} &
+		T'' +_Y S'' 
+			\ar[d]|{\left\langle t''_Tq_T, s''_Sq_S \right\rangle } \\
+			{} &
+		T' +_Y S' 
+			\ar[r]|{\left\langle t'_Tq_T, s'_Sq_S \right\rangle } &
+		T +_Y S
+	}
+\end{equation}
+and so we obtain the vertical composite
+\begin{equation} \label{Diag:HV_CompositeViaX}
+	\xymatrix@C=1.25cm{
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{} \\
+		X 
+			\ar@/^/[rru]^{x_L \ell}
+			\ar[rr]|(.3){\left[ x_{T'}q_{T'}, x_{T''}q_{T''} \right] }
+			\ar@/_/[rrd]^{x_R r} &
+		{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+			\ar[u]|{ \pi'_X \left\langle t'_L \ell, s'_{L'} \ell' \right\rangle  }
+			\ar[d]|{ \pi''_X \left\langle t''_R r, s''_{R'}r'  \right\rangle } &
+		{} &
+		Z 
+			\ar@/_/[llu]^{z_{L'}\ell'}
+			\ar[ll]|(.3){\left[  z_{S'}q_{S'},z_{S''}q_{S''} \right]}
+			\ar@/^/[lld]^{ z_{R'}r' } \\
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{}
+	}
+\end{equation}
+which hopefully is the same as
+\begin{equation} \label{Diag:HV_CompositeViaZ}
+	\xymatrix@C=1.25cm{
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{} \\
+		X 
+			\ar@/^/[rru]^{x_L \ell}
+			\ar[rr]
+				|(.3){\left[ x_{T'}q_{T'}, x_{T''}q_{T''} \right] }
+			\ar@/_/[rrd]^{x_R r} &
+		{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+			\ar[u]|{ \pi'_Z \left\langle t'_L \ell, s'_{L'} \ell' \right\rangle  }
+			\ar[d]|{ \pi''_Z \left\langle t''_R r, s''_{R'}r'  \right\rangle } &
+		{} &
+		Z 
+			\ar@/_/[llu]^{z_{L'}\ell'}
+			\ar[ll]|(.3){\left[ z_{S'}q_{S'},z_{S''}q_{S''} \right]}
+			\ar@/^/[lld]^{ z_{R'}r' }\\
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{}
+	}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Does the Interchange Law Hold?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We need to find an isomorphism
+\[
+	\theta \from (T' \times_T T'') +_Y (S' \times_S S'') \to (T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')	
+\]
+such that the diagram commutes:
+\begin{equation} \label{Diag:InterchangeLaw}
+	\xymatrix@C=.5cm{
+		{} &
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+			\ar[luu]|{\pi'_X \left\langle t'_L\ell, s'_L\ell' \right\rangle}
+			\ar[ldddd]
+				|(.39)\hole
+				|>>>>>>>>>>>>>>>>>>{ \pi''_X \left\langle t'_L\ell, s'_L\ell' \right\rangle }  &
+		{} &
+		{} \\
+		X 
+			\ar@/^2pc/[rrruuu]|{x_L \ell} 
+			\ar[rrrru]
+				|<<<<<<<<<<<<<<<<<<<<<<<{ \left[ x_{T'}q_{T'}, x_{T''}q_{T''} \right] } 
+				|(.46)\hole
+			\ar[rrd]|{ \left[ x_{T'},x_{T''}, \right] i_T }
+			\ar@/_2pc/[rrrddd]|{x_R r} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		Z 
+			\ar@/_2.5pc/[llluuu]|{z_L \ell'}
+			\ar[llu]|{ \left[ z_{S'}q_{S'},z_{S''}q_{S''} \right] } 
+			\ar[lllld]|<<<<<<<<<<<<<<<<<<<{ \left[ z_{S'},z_{S''} \right] i_S  }
+			\ar@/^2pc/[lllddd]|{z_R r'} \\
+		{} &
+		{} &
+		(T' \times_T T'') +_Y (S' \times_S S'') 
+			\ar[ruuuu]|>>>>>>>>>>>>>{ \left\langle p_{T'}t'_L\ell, p_{S'} s'_{L'}\ell' \right\rangle }
+			\ar@{-->}[rruu]^{\theta}
+			\ar[rdd]|{ \left\langle p_{T''} t''_Rr, p_{S''}s''_{R'}r' \right\rangle  } &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{} &
+		{} 
+}
+\end{equation}
+ 
+From the diagram of composition, we can take out the diagram
+\begin{equation} \label{Diag:IL_Cubes}
+	\xymatrix@R=.1in@C=.2in{
+		{} &
+		{} &
+		{T' \times_T T''} 
+			\ar[dll]
+			\ar@{-->}[ddd]|\hole
+			\ar[dr] &
+		{} \\
+		%
+		{T'} 
+			\ar[ddd]
+			\ar[dr] &
+		{} &
+		{} &
+		{T''}
+			\ar[dll]
+			\ar[ddd] \\
+		%	
+			{} &
+		{T} 
+			\ar[ddd] &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')} 
+			\ar[dll]|(.65)\hole
+			\ar[dr] &
+		{} \\
+		%
+		{T' +_Y S'} 
+			\ar[dr] &
+		{} &
+		{} &
+		{T'' +_Y S''} 
+			\ar[dll] \\
+		%
+		{} &
+		{T +_Y S} &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{S' \times_{S} S''} 
+			\ar[dll]|(.65)\hole 
+			\ar@{-->}[uuu]|\hole 
+			\ar[dr] &
+		{} \\
+		%
+		{S'} 
+			\ar[uuu]
+			\ar[dr] &
+		{} &
+		{} &
+		{S''} 
+			\ar[dll]
+			\ar[uuu] \\
+		%
+		{} &
+		{S}
+			\ar[uuu] &
+		{} &
+		{} \\
+	}
+\end{equation}
+where the dashed arrows come from the universal property of $T' \times_T T''$ and $S' \times_S S''$ mappping down to the middle pullback square. The only thing that these maps can be are $(t',t'') \mapsto ([t']',[t'']'')$ and $(s',s'') \mapsto ([s']',[s'']'')$, where the equivalence classes $[-]',[-]''$ are from $T'+_YS'$ and $T''+_YS''$, respectively.
+
+Given these maps, we can finally find $\theta$:
+\begin{equation} \label{Diag:IL_UPForTheta}
+	\xymatrix@C=.3in@R=.3in{
+		{Y} 
+			\ar[d]
+			\ar[r] &
+		{S' \times_S S''}
+			\ar[d]
+			\ar@{-->}@/^2pc/[ddr] &
+		{} \\
+		%
+		{T' \times_T T''}
+			\ar[r] 
+			\ar@{-->}@/_2pc/[drr] &
+		{(T' \times_T T'') +_Y (S' \times_S S'')}
+			\ar@{.>}[dr]^{\theta} &
+		{} \\
+		%
+		{} &
+		{} &
+		{(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')} 
+	}
+\end{equation}
+Given how the dashed maps act, the only thing that $\theta$ can be is $([a,b]) \mapsto ([a]',[b]'')$. {\color{red} Is using the universal property get me out of having to check that this map is well defined?}
+
+But is $\theta$ an isomorphic? We will check it's a set bijection.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{A brief discussion on a pushout of sets}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consider a pushout diagram
+\[
+	\begin{tikzcd}
+		{A} 
+			\arrow{d}{g}
+			\arrow{r}{f} &
+		{B} 
+			\arrow{d}{p_B} \\
+		{C} 
+			\arrow{r}{p_C} &
+		{B+_CA} 
+	\end{tikzcd}
+\]
+The set $B+_AC = B \coprod C/\sim$ where $\sim$ is the equivalence relation generated by the relation $x \sim' y$ iff 
+\begin{itemize}
+	\item $x=y$,
+	\item there is an $a \in A$ such that $f(a)=x$ and $g(a)=y$, or
+	\item there is an $a \in A$ such that $f(a)=y$ and $g(a)=x$. 
+\end{itemize}
+Because $\sim'$ is symmetric and reflexive, $\sim$ ends up being the transitive closure of $\sim'$. Therefore, in addition to containing the relation $\sim'$, we have that $x \sim y$ when there is a string $a_1,a_2, \dotsc, a_n$ such that, (treating $f,g$ as going into $B\coprod C$) 
+\begin{itemize}
+	\item $x=f(a_1), g(a_1)=g(a_2), f(a_2)=f(a_3), \dotsc, g(a_{n})=y$ (or $f(a_{n})=y$ depending on if $n$ is even or odd), or
+	\item $x=g(a_1), f(a_1)=f(a_2), \dotsc, f(a_{n})=y$ (or $g(a_{n}=y)$ depending on if $n$ is even or odd). 	
+\end{itemize}
+The second bullet is included \textit{(unnecessarily?)} to retain symmetry.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{A helpful little lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Consider a diagram in the category of finite sets
+\begin{equation} \label{Diag:Lemma}
+	\xymatrix@C=.2in@R=.2in{
+		{} &
+		{} &
+		{B}
+			\ar@{>->}[ddd]^(.3){b_x}|\hole
+			\ar[dr]^{\iota_b} &
+		{} &
+		{} \\
+		{A} 
+			\ar[ddd]_{\cong}^{\phi}
+			\ar[dr]^{a_c}
+			\ar[urr]^{a_b} &
+		{} &
+		{} &
+		{B+C} 
+			\ar@{-->}[ddd]^{i}
+			\ar[r]^{[-]_A} &
+		{B+_A C} 
+			\ar@{-->}[ddd]^{i'} \\
+		{} &
+		{C} 
+			\ar@{>->}[ddd]_(.3){c_y}
+			\ar[urr]^(.3){\iota_c} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{X} 
+			\ar[dr]^{\iota_x} &
+		{} &
+		{} \\
+		{W} 
+			\ar[dr]_{w_y}
+			\ar[urr]^(.25){w_x}|\hole &
+		{} &
+		{} &
+		{X+Y} 
+			\ar[r]^{[-]_W} &
+		{X+_WY} \\
+		{} &
+		{Y} 
+			\ar[urr]^{\iota_y} &
+		{} &
+		{} &
+		{} \\
+	}
+\end{equation}
+where $B \to X$ and $C \to Y$ are monic and $A \to W$ is an iso. Then:
+\begin{enumerate}
+	\item The map $i$ is monic. \label{Lem:Claim1}
+	\item Given $d,d' \in B+C$, then $[d]_A = [d']_A$ iff $[i(d)]_W = [i(d')]_W$; and \label{Lem:Claim2}
+\end{enumerate} 
+
+\begin{proof}
+	\ref{Lem:Claim1} Any element in $B+C$ has the form $\iota_{b}(d)$ for $d\in B$ or $\iota_c(d)$ for $d \in C$. Consider distinct elements $\iota_b (d), \iota_b (d') \in B+C$. That is $d, d' \in B$ and $d \neq d'$. By the monotonicity of $\iota_x \circ b_x$, we have 
+	\[
+		i ( \iota_b (d)) 
+			= \iota_x (b_x(d)) 
+			\neq \iota_x (b_x(d'))
+			= \iota ( \iota_b (d')).
+	\]   
+	The case is similar if we have elements of $B+C$ included from $C$.  If we have elements $\iota_b(d), \iota_c (d') \in B+C$ with $d \in B$ then $d' \in C$, then the result follows because $\iota_x (X)$ is disjoint from $\iota_y (Y)$.    
+	
+	\ref{Lem:Claim2} $(\Rightarrow)$. If $[d]_A = [d']_A$, then $[i(d)]_W=i'([d]_A) = i'([d']_A)=[i(d')]_W$.
+	
+	$(\Leftarrow)$. Suppress the notation for pushout inclusion $\iota_{-}$ so that, for example, we write $d$ for an element in $B$ and its inclusion into $B+C$. It will be clear from context where we mean the element to live. Assume, WLOG, that $i(d) \in X+Y$ is included from $X$, by the way $d \in B+C$.  Since $[i(d)]_W=[i(d')]_W$, then either $i(d)=i(d')$ --- in which case the result follows by monotonicity of $i$ --- or, by the above discussion, there is a string $w_1, \dotsc, w_n \in W$ such that $i(d)=w_x(w_1)$, $w_y(w_1)=w_y(w_2)$, $\dotsc$, $w_x(w_n)=i(d')$ (or $w_y(w_n)=i(d)$). But then $\theta$ maps this string of $w_i$'s to a string $a_i = \theta (w_i)$ such that $d=a_b(a_1)$, $a_c(a_1)=a_c(a_2)$, $\dotsc$, $a_b(a_n)=d'$ (or $a_c(a_n)=d'$). We get $a_b(a_k)=a_b(a_{k+1})$, for sensible $k$'s, because of the back left commuting square above mapping
+	\[
+		\begin{tikzcd}
+			{a_k} 
+				\arrow[r,mapsto]
+				\arrow[d,mapsto] &
+			{a_b(a_k)} 
+				\arrow[d,mapsto] \\
+			{w_k} 
+				\arrow[r,mapsto] &
+			{w_x(w_k)}
+		\end{tikzcd}
+		%
+		\begin{tikzcd}
+			{a_{k+1}} 
+				\arrow[r,mapsto]
+				\arrow[d,mapsto] &
+			{a_b(a_{k+1})} 
+				\arrow[d,mapsto] \\
+			{w_{k+1}} 
+				\arrow[r,mapsto] &
+			{w_x(w_{k+1})}
+		\end{tikzcd}
+	\]
+	along with the facts that $B \to X$ is monic and $w_x(w_k)=w_x(w_{k+1})$. This same reasoning also gets us $a_c(a_k)=a_c(a_{k+1})$ as well as that $d=a_b(a_1)$ and $a_b(a_n)=d'$ (or $a_b(a_n)=d'$). This string of $a_i$'s implies that $[d]_A=[d']_A$.
+\end{proof}
+
+\subsection*{Is the thing we want to be a bijection a bijection?}
+
+First we show $\theta$ is surjective.  Let $([a]',[b]'')$ in co-domain.  WLOG, $a \in T'$.  We want to find a $b_0 \in T''$ such that 
+\begin{itemize*}
+	\item $(a,b_0) \in T' \times_T T''$
+	\item $[b_0]''=[b]''$, and
+	\item $([a]',[b_0]'')$ in the co-domain.
+\end{itemize*}
+About notation here, notice that $a \in T'$ and $b \in T'' + S''$.  These each are mapped to $T+_YS$ via various paths (i.e. composites), all of which are actually the same.  We will denote by $\bar{a} \in T \subseteq T+S$ and $\bar{b} \in T+S$ the images of $a$ and $b$. Then, these will project down to $[\bar{a}],[\bar{b}]  \in T+_YS$.  
+
+By definition of the co-domain, $[a]',[b]''$ map to the same element in $T +_YS$, so $[\bar{a}]=[\bar{b}]$. Then either $\bar{a}=\bar{b}$, or there is a string $y_1,\dotsc, y_n$ in $Y$ such that $\bar{a}=y_T(y_1)$, $y_S(y_1)=y_S(y_2)$, $\dotsc$, $y_{(-)}(y_n)=\bar{b}$, where the blank $(-)$ is filled in with either $T$ or $S$ depending on where $b$ lives.  
+
+In case $\bar{a}=\bar{b}$, then $\bar{a} \in T$ implies that $\bar{b} \in T$ so $b \in T''$.  Also, $(a,b) \in T' \times_T T''$ so $[a,b] \in (T' \times_T T'') +_Y (S' \times_S S'')$, which is mapped to $([a]',[b]'')$. 
+
+In case we have that $[\bar{a}]=[\bar{b}]$ by that string $y_i$, $1\leq i \leq n$ mentioned above, then write $b_0 := y_{T''}(y_1)$. Then because
+\[
+	\begin{tikzcd}
+		{T'} 
+			\arrow[d,"t_T"] &
+		{} \\
+		{T} &
+		{Y} 
+			\arrow[ul,swap,"y_{T'}"] 
+			\arrow[l,"y_T"]
+			\arrow[dl,"y_{T''}"] \\
+		{T''} 
+			\arrow[u,"t'_T"] &
+		{} 
+	\end{tikzcd}
+\]
+commutes, we have that $y_1 \mapsto a$ and $y_1 \mapsto b_0$, so the images $\bar{a},\bar{b}_0$ in $T$ are equal meaning that $(a,b_0) \in T' \times_T T''$ and that $[(a,b_0)]$ is in the domain of $\theta$.  Also, $[\bar{b}_0] = [\bar{a}] = [\bar{b}]$ in $T+_YS$.  Then by the above lemma, $[b]''=[b_0]''$.  Hence $([a]',[b]'')=([a]',[b_0]'')$ as desired.  
+
+Now we show injectivity. Let $[(a,b)],[(a',b')]$ in the domain such that $([a]',[b]'')=([a']',[b']'')$. To show $[(a,b)]=[(a',b')]$, we need either $(a,b)=(a',b')$ or to find a string $y_1, \dotsc, y_n \in Y$ relating $(a,b)$ and $(a',b')$.  From the structure of the domain, we know that $[(a,b)]$ and $[(a',b')]$ are included from $T' \times_T T''$, $S' \times_S S''$ or both, though this does not mean that $[(a,b)]$ and $[(a',b')]$ are included from the same place.  Assume WLOG that $(a,b) \in T' \times_T T''$ and then $(a',b') \in (T' \times_T T'') + (S' \times_S S'')$. 
+
+First, suppose that $[a]'$ is not in the image of $Y$ (I can say `the image' because all the composites commute).  That is, $a \in T'$ does not identify with any other elements in $T' + S'$. This means that $[a]'$ is a class with a single object, and so the assumption that $[a]'=[a']'$ implies that $a=a'$.  Moreover, $t'_{T}(a) \in T+S$ does not identify with any other element: if so, it'd be in the image of $Y$ but since $T'+S' \to T+S$ is monic by the above lemma, then $a$ would be in the image of $Y$.  But $[t'_{T}(a)]=[t''_T(b)]$ by the nature of $([a]',[b]'')$ being in the co-domain.  But since $[t'_T(a)]$ is a class with a single object, we have that $t''_T(b)=t'_T(a) \in T$.  Thus, $t''_T(b)$ identifies with no other object, and so by the above lemma, $b \in T''$ doesn't either. Thus, the assumption that $[b]''=[b']''$ implies that $b=b'$.  And so injectivity is shown in this case.
+
+Now suppose that $[a]'$ is in the image of $Y$.  As above, let $\bar{x}$ denote the image in $T$ of an element $x$ that lives in either $T',T'',S',S''$. We use this because we will want to work with elements that we know is in an image but don't know where they come from.  Then $[\bar{a}] = [\bar{a}']$ in $T +_Y S$ so there is a sequence $y_1, \dotsc, y_n$ such that
+\[
+	\bar{a} = y_T(y_1), y_S (y_1)=y_S(y_2), \dotsc, 
+	y_{(-)} (y_n) = \bar{a}'.
+\]
+We write $y_{(-)}$ because we don't know whether $\bar{a}'$ lives in $T$ or $S$.  Now $y_{T'} (y_1) = a, y_{T''} (y_1) = b, y_{(-)'} (y_n)=a', y_{(-)''} (y_n)=b'$ because the maps $T',T'' \to T$ and $S',S'' \to S$ are monic and the commuting of relevant diagrams. Hence $y_1 \mapsto (a,b)$ via $Y \to T' \times_T T''$ and $y_n \mapsto (a',b')$. So this string $y_1, \dotsc, y_n$ should relate $[a,b]$ and $[a',b']$ in the domain, giving us injectivity. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Extend this result to pre-sheaves.}
+
+Given a pre-sheaf category, $\mathbf{Sets}^{C^{\text{op}}}$, limits in there are taken pointwise.  That is, consider a diagram $F \from J \to \mathbf{Sets}^{C^{op}}$ and the evaluation functors $E_x \from \mathbf{Sets}^{C^{op}} \to \mathbf{Sets}$. So $F_x:=F ; E_x \from J \to \mathbf{Sets}$ are diagrams in $\mathbf{Sets}$. For each $x$, there is a limit $\lim_{\leftarrow J}F_x$ and these limits fit together to form the limit we care about, namely
+\[ 
+	(\lim_{\leftarrow J} F)(x) = \lim_{\leftarrow J} F_x(j).
+\]
+Maybe a simple example to really clear this up. Consider a diagram
+\[
+	F \from J \to \mathbf{Sets}^{C^{op}}
+\]
+where $J$ is the category $a \xrightarrow{f} b$.  So $F$ gives a diagram $F(a) \xto{F(f)} F(b)$ where $F(a),F(b)\from C^{op} \to \mathbf{Sets}$ are functors and a natural transformation $F(f) \from F(a) \to F(b)$.  Hitting this thing with an evaluation functor $ev_x \from \widehat{C} \to \mathbf{Sets}$ we get a diagram $F(a)(x) \xto{F(f)_x} F(b)(x)$ in $\mathbf{Sets}$ where $F(f)_x$ is the $x$ component of the natural transformation.  This, of course has a limit $(L_x,L_a,L_b)$ which is the universal cone (ignore that $L_x \cong F(a)(x)$ in this case so this example scales up in complexity)
+\[
+	\begin{tikzcd}
+		{} &
+		{L_x} \ar[dl,"L_a"] \ar[dr,"L_b"]&
+		{} \\
+		{F(a)(x)} \ar[rr,"F(f)_x"] &
+		{} &
+		{F(b)(x)} 
+	\end{tikzcd}
+\]
+Now, given a map $\theta \from x \to y$ in $C^{op}$, we have maps $F(a)(\theta) \from F(a)(x) \to F(a)(y)$ and similarly for $b$ to give a situation depcited
+\[
+	\begin{tikzcd}
+		{} &
+		{L_x} 
+			\ar[dr]
+			\ar[dl] &
+		{} \\
+		{F(a)(x)} 
+			\ar[rr, "F(f)_x"] 
+			\ar[d, "F(a)(\theta)"]&
+		{} &
+		{F(b)(x)} 
+			\ar[d, "F(b)(\theta)"]\\
+		{F(a)(y)} 
+			\ar[rr, "F(f)_y"] &
+		{} &
+		{F(b)(y)} 
+	\end{tikzcd}
+\] 
+so that $L_x$ is a cone over $F(f)_y \from F(a)(y) \to F(b)(y)$, inducing a map $L_x \to L_y$ between limits. This is how we get the limiting functor $F_L = \lim_{J} F$...by defining $F_L (x) = L_x$ on objects and $F_L(\theta \from x \to y) = F_L(\theta) \from L_x \to L_y$ where $F_L (\theta)$ is the induced map between cones.  
+
+
+Why do we care about this?  Well, both objects in the isomorphism (the apexes of co-spans, $2$ morphism thingies) we showed proving the interchange law in the case of $\mathbf{Sets}$ are  (co-)limits of diagrams.  So we can extend this isomorphism to pre-sheaves by computing the pointwise limits of the same shaped diagrams we cared about above.  
+
+Let's stop beating around the bush and actually try to do this.  Suppose we have this diagram of composition like we do above.  We can do all the vertical and horizontal compositions because pre-sheaf categories are complete and co-complete.  As above, we wind up with the objects $(T' \times_T T'') +_Y (S' \times_S S'')$ and $(T' +_Y S') \times_{T' +_Y S} (T'' +_Y S'')$.
+
+From lazyness, we'll write the categories of functors $\mathbf{Sets}^{C^{op}}$ as $\widehat{C}$. We begin with a discussion of the evaluation functors $ev_c \from \widehat{C} \to \mathbf{Sets}$ by showing some lemmas.
+
+\begin{lem}
+	Let's be in a category where a morphism $f \from x \to y$ has a kernel pair. Then $f$ is monic iff its kernel pair maps are both the equal isomorphisms.
+\end{lem}  
+\begin{proof}
+	$(\Rightarrow)$.  Let $f$ be monic, which implies that the kernel pair arrows are equal.  Take the pullback square (I don't know what's up with that wacky arrow)
+	\[
+		\begin{tikzcd}
+			{x} 
+				\ar[rdd,bend right=20em,"\id"]
+				\ar[rd, dashed,"\theta"]
+				\ar[rrd,bend left=5em, "\id"] &
+			{} &
+			{} \\
+			{} &
+			{x \times_y x} 
+				\ar[r, "g"]
+				\ar[d,"g"] &
+			{x} 
+				\ar[d,"f"]\\
+			{} &
+			{x} 
+				\ar[r,"f"]&
+			{y}
+		\end{tikzcd}
+	\]
+	So 
+	\begin{equation} \label{ExtPShv:eq:MonImpKPIso1}
+		\theta;g = \id.
+	\end{equation}
+	But then $g;\theta;g=g$ which implies that $g;\theta=\id$ because $g$ is epic as follows by \eqref{ExtPShv:eq:MonImpKPIso1}.
+	
+	$(\Leftarrow)$.  Trivial.  
+\end{proof}
+
+\begin{lem}
+	A functor preserving pullbacks preserves monics.
+\end{lem}
+\begin{proof}
+	Let $f \from x \to y$ be monic. The pullback square in the domain
+	\[
+		\begin{tikzcd}
+			{x \times_y x} 
+				\ar[r,"g"]
+				\ar[d,"g"] &
+			{x}
+				\ar[d,"f"]\\
+			{x} 
+				\ar[r,"f"]&
+			{y}
+		\end{tikzcd}
+	\]
+	where $g$ is an isomorphism is sent to a commutative square where the image of $g$ is an isomorphism and the image of $x \times_y x$ is the pullback. Hence the image of $f$ is monic.
+\end{proof}
+
+\begin{lem}
+	An evaluation functor $ev_c \from \widehat{C} \to \mathbf{Sets}$ preserves pullbacks, hence monos.  
+\end{lem}
+\begin{proof}
+	The functor $ev_c$ behaves on pullback diagrams as
+	\[
+		\begin{tikzcd}
+			{F \times_H G} 
+				\ar[r] \ar[d] &
+			{G} 
+				\ar[d] \\
+			{F} 
+				\ar[r] &
+			{H}
+		\end{tikzcd}
+		\xmapsto{ev_c}
+		\begin{tikzcd}
+			{F \times_H G (c)} 
+				\ar[r] \ar[d] &
+			{G(c)} 
+				\ar[d] \\
+			{F(c)} 
+				\ar[r] &
+			{H(c)}
+		\end{tikzcd}
+	\]
+	But, as discussed above, the pullback is taken pointwise, so $F \times_H G (c) = F(c) \times_{H(c)} G (c)$, and so the pullback is preserved.
+\end{proof}
+
+\begin{thm}
+	In $\widehat{C}$, $(T' +_Y S') \times_{T +_Y S} (T''+_Y S'') \cong (T' \times_{T} T'') +_{Y} (S' \times_{S} S'')$.
+\end{thm}
+
+\begin{proof}
+	Take any old object $c \in C$ and consider the evaluation functor $ev_c \from \widehat{C} \to \mathbf{Sets}$. Then under $ev_c$, we have the assignments $(T' +_Y S') \times_{T +_Y S} (T''+_Y S'') \mapsto (T'(c) +_{Y(c)} S'(c)) \times_{T(c) +_{Y(c)} S(c)} (T''(c)+_{Y(c)} S''(c))$ and, similarly $(T' \times_{T} T'') +_{Y} (S' \times_{S} S'') \mapsto (T'(c) \times_{T(c)} T''(c)) +_{Y(c)} (S'(c) \times_{S(c)} S''(c))$.  Because $ev_c$ respects monotonicity and, of course, composition, we can use our work in $\mathbf{Sets}$ to show that $(T'(c) +_{Y(c)} S'(c)) \times_{T(c) +_{Y(c)} S(c)} (T''(c)+_{Y(c)} S''(c)) \cong (T'(c) \times_{T(c)} T''(c)) +_{Y(c)} (S'(c) \times_{S(c)} S''(c))$.  But $c$ was arbitrary, so the functors $(T' +_Y S') \times_{T +_Y S} (T''+_Y S'')$ and $(T' \times_{T} T'') +_{Y} (S' \times_{S} S'')$ are naturally isomorphic. 
+	
+	I guess I should say something about naturality.  It's clear that we get a family of isomorphisms $\eta_c$. But why the commuting squares? For notational ease, denote the functors $F := (T' +_Y S') \times_{T +_Y S} (T''+_Y S'')$ and $G:=  (T' \times_{T} T'') +_{Y} (S' \times_{S} S'') $.  Now let $f \from a \to b$ be a morphism in $C^{op}$.  Our work above gives us isomorphisms $\eta_a \from Fa \to Ga$ and $\eta_b \from Fb \to Gb$.  We want to show that
+	\[
+		\begin{tikzcd}
+			{Fa} 
+				\ar[r,"\eta_a"]
+				\ar[d,"Ff"] &
+			{Ga} 
+				\ar[d,"Gf"] \\
+			{Fb} 
+				\ar[r,"\eta_b"]&
+			{Gb} 
+		\end{tikzcd}
+	\]
+	To do this, we use the fact that both $Fa$ and $Ga$ are limits to the diagram
+	\[
+		\begin{tikzcd}
+			{} &
+			{T''a +_{Ya} S''} 
+				\ar[d,"\epsilon''_a"] \\
+			{T'a +_{Ya} S'a } 
+				\ar[r, "\epsilon'_a"] &
+			{Ta +_{Ya} Sa}
+		\end{tikzcd}
+	\]
+	where $\epsilon'$ and $\epsilon''$ are the morphisms -- natural transformations in this case -- in the diagram of composition. There is the similar situation for $b$.  Hence, we obtain a diagram (hold for comments on the commutativity of the diagram)
+	\[
+		\begin{tikzcd}[column sep=small]
+			{Fa} 
+				\ar[rr, "\eta_a"]
+				\ar[dr,dashed,"Ff"] 
+				\ar[ddrr,bend right=40em] &
+			{} &
+			{Ga} 
+				\ar[rr,"ga''"]
+				\ar[dr,dashed,"Gf"] 
+				\ar[dd,"ga'"] &
+			{} &
+			{T''a +_{Ya} S''a} 
+				\ar[dr, "T''+_yS''(f)" ]
+				\ar[dd,pos=.3,"\epsilon''_a"] &
+			{} \\
+			{} &
+			{Fb} 
+				\ar[rr,"\eta_b",crossing over]
+				\ar[ddrr,bend right=40em,crossing over] &
+			{} &
+			{Gb} 
+				\ar[rr,crossing over,"gb''"] &
+			{} &
+			{T''b +_{Yb} S''b} 
+				\ar[dd,"\epsilon''_b"] \\
+			{} &
+			{} &
+			{T'a +_{Ya} S'a} 
+				\ar[rr,pos=.3,"\epsilon'_a"]
+				\ar[dr,swap,"T'+_YS'(f)"] &
+			{} &
+			{Ta +_{Ya} Sa} 
+				\ar[dr, "T+_YS(f)"] &
+			{} \\
+			{} &
+			{} &
+			{} &
+			{T'b +_{Yb} S'b} 
+				\ar[rr,"\epsilon_b'"]&
+			{} &
+			{Tb +_{Yb} Sb} 
+			%
+			\ar[from=2-4,to=4-4,crossing over, "gb'"]
+		\end{tikzcd}
+	\]  
+	The idea is to show that the left, upper face commutes.  Recall that, by definition of limit functors in pre-sheaf categories, that $Gf$ is the unique arrow obtained from $Ga$ being a cone over
+	\[
+		\begin{tikzcd}
+			{} &
+			{T''b +_{Yb} Sb''} 
+				\ar[d,"\epsilon''_b"] \\
+			{T'b +_{Yb} S'b } 
+				\ar[r, "\epsilon'_b"] &
+			{Tb +_{Yb} Sb}
+		\end{tikzcd}
+	\]
+	The map $Ff$ is obtained in the same way. Note that 
+	\[
+		Ff;\eta_b;gb'' 
+			= \eta_a;ga'';T''+_YS''(f)
+			= \eta_a;Gf;gb''.
+	\]
+	We can play the same game for the paths from $Fa$ to both $Tb+_{Yb}Sb$ and $T'b+_{Yb}S'b$. The point is that $Fa$ forms a cone over the diagram above through $\eta_a ;Gf$ and $Ff;\eta_b$ in the same way.  Hence $\eta_a ;Gf = Ff;\eta_b$ by universal property as desired and we have naturality!	
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Let's try generalizing again.}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+We, here we'll try to gain inspiration from the proof above in the category of sets to generalize to any topos, or every better, an adhesive category.
+
+First, we'll work toward proving that helpful little lemma.
+
+\begin{lem}
+	Working in some category with co-products and pushouts, we have a pushout square
+	\[
+		\begin{tikzcd}
+			{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+			{B+C} \ar[d,"f"] \\
+			{X} \ar[r, "\iota"]&
+			{X+C}
+		\end{tikzcd}
+	\]
+	where $f$ is induced from $B \rightarrowtail X$.
+\end{lem}
+ \begin{proof}
+ 	We have 
+ 	\[
+ 		\begin{tikzcd}
+	 		{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+	 		{B+C} \ar[d,"f"] &
+	 		{C} \ar[l,"\iota"] \ar[dl,"\iota"]\\
+	 		{X} \ar[r, "\iota"]&
+	 		{X+C}
+	 	\end{tikzcd}
+ 	\]
+ 	and the pushout square
+ 	\[
+	 	\begin{tikzcd}
+		 	{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+		 	{B+C} \ar[d,"f"] \ar[ddr,bend left]&
+		 	{} \\
+		 	{X} \ar[r, "\iota"] \ar[rrd,bend right] &
+		 	{X+C} &
+		 	{} \\
+		 	{} &
+		 	{} &
+		 	{X+_B(B+C)}
+ 	\end{tikzcd}
+ 	\]
+ 	occupying the outer square of the diagram. 
+ 	Using the universal property of $X+C$ we get
+  	\[
+	  	\begin{tikzcd}
+		  	{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+		  	{B+C} \ar[d,"f"] \ar[ddr,bend left]&
+		  	{C} \ar[l,"\iota"] \ar[dl,"\iota",crossing over]  \\
+		  	{X} \ar[r, "\iota"] \ar[rrd,bend right] &
+		  	{X+C} \ar[dr,dashed]&
+		  	{}\\
+		  	{} &
+		  	{} &
+		  	{X+_B(B+C)}
+	  	\end{tikzcd}
+  	\]
+  	That the upper right triangle commutes follows from the universal property of $B+C$.  The rest of the proof is straightforward. 
+ \end{proof}
+ 
+ \begin{remark}
+ 	If the pushout discussed in the above lemma is Van Kampen, then $f$ is monic because VK-squares preserve monos.
+ \end{remark}
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \subsection*{A helpful little lemma generalized}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ Consider a diagram in a category with co-limits and pushout and pushouts along monos are Van Kampen (like, for instance, adhesive categories).
+ \begin{equation} \label{Diag:Lemma}
+ \xymatrix@C=.2in@R=.2in{
+ 	{} &
+ 	{} &
+ 	{B}
+ 	\ar@{>->}[ddd]^(.3){b_x}|\hole
+ 	\ar[dr]^{\iota_b} &
+ 	{} &
+ 	{} \\
+ 	{A} 
+ 	\ar[ddd]_{\cong}^{\phi}
+ 	\ar[dr]^{a_c}
+ 	\ar[urr]^{a_b} &
+ 	{} &
+ 	{} &
+ 	{B+C} 
+ 	\ar@{-->}[ddd]^{i}
+ 	\ar[r]^{[-]_A} &
+ 	{B+_A C} 
+ 	\ar@{-->}[ddd]^{i'} \\
+ 	{} &
+ 	{C} 
+ 	\ar@{>->}[ddd]_(.3){c_y}
+ 	\ar[urr]^(.3){\iota_c} &
+ 	{} &
+ 	{} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{X} 
+ 	\ar[dr]^{\iota_x} &
+ 	{} &
+ 	{} \\
+ 	{W} 
+ 	\ar[dr]_{w_y}
+ 	\ar[urr]^(.25){w_x}|\hole &
+ 	{} &
+ 	{} &
+ 	{X+Y} 
+ 	\ar[r]^{[-]_W} &
+ 	{X+_WY} \\
+ 	{} &
+ 	{Y} 
+ 	\ar[urr]^{\iota_y} &
+ 	{} &
+ 	{} &
+ 	{} \\
+ }
+ \end{equation}
+ where $B \to X$ and $C \to Y$ are monic and $A \to W$ is an iso. Then:
+ \begin{enumerate}
+ 	\item The map $i$ is monic. \label{Lem:Claim1}
+ 	\item Given maps $x,y \from Q \in B+C$, then $x;[-]_A = y;[-]_A$ iff $x;i;[-]_W = y;i;[-]_W$; and \label{Lem:Claim2}
+ \end{enumerate} 
+ 
+ \begin{proof}
+ 	Consider the diagram
+ 	\[
+ 	\begin{tikzcd}
+	 	{B} \ar[d, rightarrowtail,"b_x"] \ar[r] &
+	 	{B+C} \ar[d,rightarrowtail,"f"] &
+	 	{C} \ar[l] \ar[d,"1"]\\
+	 	{X} \ar[r] \ar[d,"1"] &
+	 	{X+C} \ar[d,rightarrowtail,"g"]&
+	 	{C} \ar[l] \ar[d,"c_y"] \\
+	 	{X} \ar[r]  &
+	 	{X+Y} &
+	 	{Y} \ar[l]
+ 	\end{tikzcd}
+\] 	
+ 	The maps $f$ and $g$ are obtained from the universal property of their domains.  As showed in the above lemma, the upper right and lower left squares are pushouts so, since they are monic pushouts, which we are assuming are monic preserving, we know both $f$ and $g$ are monic. Since the upper and lower half of the diagram commutes, the entire thing commutes.  Hence $f;g$ makes the square minus the co-product injections $X,C \to X+C$ commute. But $i$ is the unique such map, so $i=f;g$ and $i$ is monic.  
+ 	
+ 	$(\Rightarrow)$.  Observe that $[-]_A$ and $[-]_W$ are co-equalizers for the top square and bottom square, respectively.  The path from $A \to X+_WY$ along the top square, and the either $[-]_A i'$ or $i[-]_W$ is the same so, we get that $[-]_A i'=i[-]_W$ by the universal property  of co-equalizers.  
+ 	
+ 	$(\Leftarrow)$. The opposite direction is equivalent to showing that $i'$ is monic. Here, we'll use the fact that $A \cong W$, so we'll be a bit non-chalant and show that 
+ 	\[
+ 	\begin{tikzcd}
+	 	{B+C} \ar[r,"{[-]_A}"] \ar[d,"i"] &
+	 	{B+_AC} \ar[d,"i'"]\\
+	 	{X+Y} \ar[r,"{[-]_W}"] &
+	 	{X+_AY} \\
+ 	\end{tikzcd}
+ 	\]
+ 	is a pushout which, given that $i$ is monic and we have that pushouts over monics are VK, is sufficient to show that $i'$ is monic. Let's set up a competitor,
+ 	\[
+ 	\begin{tikzcd}
+	 	{B+C} \ar[r,"{[-]_A}"] \ar[d,"i"] &
+	 	{B+_AC} \ar[d,"i'"] \ar[ddr,"f"]&
+	 	{} \\
+	 	{X+Y} \ar[r,"{[-]_W}"] \ar[drr,"g"]&
+	 	{X+_AY} &
+	 	{} \\
+	 	{} &
+	 	{} &
+	 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	This means that $Q$ is a competetor to
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} \ar[r] \ar[d] &
+	 	{X} \ar[d,"{\iota_X;[-]_W}"] \ar[ddr,"\iota_X;g"]&
+	 	{} \\
+	 	{Y} \ar[r,"{\iota_Y;[-]_W}"] \ar[drr,"\iota_Y;g"]&
+	 	{X+_AY} &
+	 	{} \\
+	 	{} &
+	 	{} &
+	 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	Why? Because (look at the diagram in the statement of the proof where we'll write $a_x$ for $w_x$ composed with the isormorphism from $A \to W$) $a_x\iota_xg= a_b\iota_big = a_c\iota_cig=a_y\iota_yg$. Out pops the unique moprhism $\psi \from X+_AY \to Q$ making the above diagram commute.  The claim is that $\psi$ is the unique morphism making the alleged pushout square commute.  
+ 	
+ 	Is $[-]_W \psi = g$?  Yes, because we have the diagram
+ 	\[
+ 	\begin{tikzcd}
+	 	{X} \ar[r] \ar[dr] &
+	 	{X+Y} \ar[d,dashed] &
+	 	{Y} \ar[l] \ar[dl]\\
+	 	{} &
+	 	{Q} &
+	 	{}
+ 	\end{tikzcd}
+ 	\]
+ 	with the maps $\iota_X[-]_W\psi = \iota_X g \from X \to Q$ and $\iota_Y[-]_W\psi = \iota_Y g \from Y \to Q$ and so there is a unique arrow $X+Y \to Q$, but both $[-]_W\psi$ and $g$ will give us a commuting diagram, so by uniqueness, $[-]_W\psi=g$.  
+ 	
+ 	Is $i'[-]_W=f$? We're going to use the fact that $Q$ is a competitor to
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} \ar[r] \ar[d] &
+	 	{B} \ar[d] \ar[ddr]&
+	 	{} \\
+	 	{C} \ar[r] \ar[drr]&
+	 	{B+_AC} &
+	 	{} \\
+	 	{} &
+	 	{} &
+	 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	Note that the maps $B \to Q$, we have 
+ 	\[
+	 	\iota_B [-]_A f 
+		 	= \iota_B i g 
+		 	= \iota_B i [-]_W \psi
+		 	= \iota_B [-]_A i' \psi
+ 	\]
+ 	and similarly for the map $C \to Q$, we have
+ 	\[
+	 	\iota_C [-]_A f 
+	 	= \iota_C i g 
+	 	= \iota_C i [-]_W \psi
+	 	= \iota_C [-]_A i' \psi.
+ 	\]
+ 	So both $f,i' \psi \from B+_AC \to Q$ will allow the above diagram to commute, and so by universality, $f=i'\psi$.  
+ 	
+ 	Therefore, 
+ 	\[
+ 	\begin{tikzcd}
+	 	{B+C} \ar[r,"{[-]_A}"] \ar[d,"i"] &
+	 	{B+_AC} \ar[d,"i'"]\\
+	 	{X+Y} \ar[r,"{[-]_W}"] &
+	 	{X+_AY} \\
+ 	\end{tikzcd}
+ 	\]
+ 	is a pushout and, given our context, it respects monics, so $i'$ is monic. 	
+ \end{proof}
+ 
+ %----------------------------------------------
+ 
+ \begin{thm}
+ 	Let's assume that we're in a category where monic and epi implies iso, like 
+ 	a topos. There is an isomorphism $A \cong B$, where $A := 
+ 	(T'+_YS')\times_{T+_YS}(T''+_YS'')$ and $B := (T' \times_T T'') +_Y 
+ 	(S'\times_SS'')$.  
+ \end{thm}
+ 
+ \begin{proof}
+ 	Write
+ 	\begin{align*}
+	 	&A := (T' \times_T T'') + (S'\times_SS'') \\
+	 	&A_y  := (T' \times_T T'') +_Y (S'\times_SS'') \\
+	 	&B  := (T'+S') \times_{T+S} (T''+S'') \\ 
+	 	&B_y := (T'+_YS') \times_{T+_YS} (T''+_YS'') \\
+ 	\end{align*}
+ 	
+ 	%---------------- Part I of Proof ---------------------
+ 	
+ 	\textbf{(I) Use lemma to get maps.}  The above lemma gives us monics $c,c_y$ via the diagram
+ 	\[
+ 	\begin{tikzcd}[column sep=.5em,row sep=.5em]
+	 	{} &
+	 	{} &
+	 	{T'\times_TT''} \ar[dr] \ar[ddd,rightarrowtail]&
+	 	{} &
+	 	{} \\
+	 	%
+	 	{Y} \ar[rru] \ar[rd] \ar[ddd,"\cong"]&
+	 	{} &
+	 	{} &
+	 	{A} \ar[ddd,dashed,rightarrowtail, "c"] \ar[r] &
+	 	{A_y} \ar[ddd,dashed,"c_y"]\\
+	 	%
+	 	{} &
+	 	{S'\times_SS''} \ar[rru,crossing over] &
+	 	{} &
+	 	{} &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T} \ar[dr]&
+	 	{} &
+	 	{} \\
+	 	%
+	 	{Y} \ar[rru] \ar[rd]&
+	 	{} &
+	 	{} &
+	 	{T+S} \ar[r]&
+	 	{T+_YS} \\
+	 	%
+	 	{} &
+	 	{S} \ar[rru] &
+	 	{} &
+	 	{} &
+	 	{} 
+	 	%
+	 	\ar[from=3-2,to=6-2,rightarrowtail,crossing over]
+ 	\end{tikzcd}
+ 	\]
+ 	We get maps $c',c_y',c'',c_y''$ the same way.
+ 	
+ 	%---------------- Part II of Proof ---------------------
+ 	
+ 	\textbf{(II) Find the desired map and show it's monic.} 
+ 	
+ 	Consider the following diagram:
+ 	\[
+ 	\begin{tikzcd}
+	 	{} &
+	 	{} &
+	 	{} &
+	 	{T'+S'} 
+		 	\ar[rd,rightarrowtail]
+		 	\ar[ddd,twoheadrightarrow]&
+	 	{} \\
+	 	%
+	 	{A} 
+		 	\ar[ddd,twoheadrightarrow,"a"]  
+			\ar[rrru,bend left=15,"c'"] &
+	 	{B} 
+		 	\ar[urr,rightarrowtail]
+		 	\ar[dr,rightarrowtail] &
+	 	{} &
+	 	{} &
+	 	{T+S} 
+		 	\ar[ddd,twoheadrightarrow]\\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T''+S''} &
+	 	{} &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{} &
+	 	{T'+_YS'} 
+		 	\ar[dr,rightarrowtail]&
+	 	{} \\
+	 	%
+	 	{A_Y} 
+		 	\ar[rrru,bend left=20,"c'_y"] 
+		 	\ar[r,rightarrowtail, dashed,"\theta"]
+		 	\ar[rrd,bend right=20,"c''_y"] &
+	 	{B_Y} 
+		 	\ar[rru,rightarrowtail] &
+	 	{} &
+	 	{} &
+	 	{T+_YS} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T''+_YS''} &
+	 	{} &
+	 	{}
+	 	%
+	 	%
+	 	\ar[from=2-2,to=5-2,crossing over,dashed,"b"]
+	 	\ar[from=2-1,to=3-3,crossing over, bend right=20,  "c''" near start]
+	 	\ar[from=3-3,to=2-5,crossing over,rightarrowtail]
+	 	\ar[from=2-1,to=2-5,crossing over,bend left=15,"c"]
+	 	\ar[from=5-1,to=5-5,bend right=10,"c_y"]
+	 	\ar[from=3-3,to=6-3,crossing over,twoheadrightarrow]
+	 	\ar[from=5-2,to=6-3,crossing over,rightarrowtail]
+	 	\ar[from=6-3,to=5-5,crossing over,rightarrowtail]
+	 	\ar[from=2-1,to=2-2,rightarrowtail,dashed,swap,"d"]
+ 	\end{tikzcd}
+ 	\]
+ 	The map $d \from A \to B$ is from the top square pull back and monic since $c,c',c''$ are. The map $b \from B \to B_Y$ is from the bottom square pullback.  The star of the show, $\theta \from A_Y \to B_Y$ is from the bottom square pullback and is monic since $c_y,c_y',c_y''$ are.  
+ 	
+ 	Regardless of us assuming anything about the regularity of our category, the vertical maps $T+S \to T+_YS$, $T'+S' \to T'+_YS'$, $T''+S'' \to T''+_YS''$ are regular.  Recall that $Y$ is a cone over the diagram in two different ways, via the $T$ side and via the $S$ side. This gives two different maps for each of $Y \to T+S$,$Y \to T'+S'$,$Y \to T''+S''$.  It is easy to check that the vertical epis are co-equalizers of these maps.  
+ 	
+ 	The remainder of the proof is to show that $\theta$ is epic.
+ 	
+ 	\textbf{(III) Get the pushout of the left square.} Let $P$ be the pushout
+ 	\[
+	 \begin{tikzcd}
+		 {A} 
+			 \ar[r,rightarrowtail,"d"]
+			 \ar[d,twoheadrightarrow,"a"] &
+		 {B} \ar[d,twoheadrightarrow,"p"] \\
+		 {A_Y} \ar[r,rightarrowtail, "p'"] &
+		 {P} 
+	 \end{tikzcd}
+ 	\] 
+ 	where $p$ is epic and $p'$ monic since pushouts preserve these properties.
+ 	
+ 	\textbf{(IV) The projection $p$ is a co-equalizer.} We have maps $t_a,s_a \from Y \to A$ and $t_b,s_b \from Y \to B$.  Check that $a$ is the co-equalizer of $t_a,s_a$.  We will show that $p \from B \to P$ is the co-equalizer of $t_b,s_b$.  
+ 	
+ 	Let's discuss the diagram
+ 	\[
+	 \begin{tikzcd}
+		 {Y} 
+			\ar[r,equal]
+			\ar[d,shift left=1,"s_a"]
+			\ar[d,shift left=-1,swap,"t_a"]&
+		 {Y} 
+			 \ar[d,shift left=1,"s_b"]
+			 \ar[d,shift left=-1,swap,"t_b"]&
+		 {} \\
+		 {A} 
+			 \ar[r,rightarrowtail,"d"]
+			 \ar[d,twoheadrightarrow,"a"] &
+		 {B} 
+			 \ar[d,twoheadrightarrow,"p"] 
+			 \ar[ddr,bend left=20,"x"]&
+		 {} \\
+		 {A_Y} 
+			 \ar[r,rightarrowtail,"p'"]
+			 \ar[rrd,bend right=20,swap,"y"] &
+		 {P} 
+			 \ar[dr,dashed,"z"]&
+		 {} \\
+		 {} &
+		 {} &
+		 {Q} 
+	 \end{tikzcd}
+ 	\]
+ 	We start with the squares and consider an $x \from B \to Q$ so that $t_bx=s_bx$.  Then the upper square commutes so $t_adx=s_adx$. Since $a$ co-equalizes $t_a,s_a$, this gives us $y \to A_Y \to Q$ so that $ay=dx$ which is universal.  Then, since the bottom square is a pushout, we get a universal map $z$ so the right triangle commutes.  Hence, $p$ is the co-equalizer of $t_b,s_b$.
+ 	
+ 	\textbf{(V) Show $A \to P$ is epic.} This is the hole in the proof.  We want to show that the composite $ap'=dp \from A \to P$ is epic.  Somehow use the regularity of $a$ and $p$ and the pushout square.
+ 	
+ 	\textbf{(VI) Make an isomorphism out of $d,p'$.} From the composite $A \to P$ being epic, it follows that $p'$ is epic.  We want $p'$ to be regular, which implies it's an isomorphism.  By assumptions that pushouts of monics are pullbacks, the square
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} 
+		 	\ar[r,rightarrowtail,"d"]
+		 	\ar[d,twoheadrightarrow,"a"] &
+	 	{B} 
+		 	\ar[d,twoheadrightarrow,"p"] \\
+	 	{A_Y} 
+		 	\ar[r,"p'","\cong"'] &
+	 	{P} 
+ 	\end{tikzcd}
+ 	\] 
+ 	is a pullback, which respects regular epis (in a regular category) and so $d$ is regular epic, hence an isomorphism.
+ 	
+ 	\textbf{(VII) Find a map $P \to B_Y$.} We get the map $\psi \from P \to B_Y$ from the pushout square
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} 
+		 	\ar[r,"d", "\cong"']
+		 	\ar[d,twoheadrightarrow,"a"] &
+	 	{B} 
+		 	\ar[d,twoheadrightarrow,"p"] 
+		 	\ar[ddr,bend left=20,"b"] &
+		{}\\
+	 	{A_Y} 
+		 	\ar[r,"p'","\cong"'] 
+		 	\ar[rrd,bend right=20,"\theta"'] &
+	 	{P} 
+		 	\ar[rd,dashed,"\psi"]\\
+	 	{} &
+	 	{} &
+	 	{B_Y} 
+ 	\end{tikzcd}
+ 	\]
+ 	
+ 	\textbf{(VIII) Show $\psi$ is monic.}  \textit{(I'm not certain this is needed. Maybe only $\psi$ to be regular epic.)} Get a map $\eta \from P \to T+_YS$ from the pushout square
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} 
+		 	\ar[r,"d", "\cong"']
+		 	\ar[d,twoheadrightarrow,"a"] &
+	 	{B} 
+		 	\ar[d,twoheadrightarrow,"p"] 
+		 	\ar[ddr,bend left=20] &
+	 	{}\\
+	 	{A_Y} 
+		 	\ar[r,"p'","\cong"'] 
+		 	\ar[rrd,bend right=20,"c_y"'] &
+	 	{P} 
+		 	\ar[rd,dashed,"\eta"]\\
+	 	{} &
+	 	{} &
+	 	{T+_YS} 
+ 	\end{tikzcd}
+ 	\]
+ 	Now we have the diagram
+ 	\[
+ 	\begin{tikzcd}
+	 	{A} \ar[r,"d"] \ar[d,"a"] &
+	 	{B} \ar[r,rightarrowtail] \ar[d,"p"] &
+	 	{T+S} \ar[d]\\
+	 	{A_Y} \ar[r,"p'"] \ar[rr,bend right=20, "b_y"'] &
+	 	{P} \ar[r, "\eta"] &
+	 	{T+_YS} 
+ 	\end{tikzcd}
+ 	\]
+ 	whose outer and left squares are pushouts. So the right square is a pushout. But pushouts respects monics, so $\eta$ is monic.  We have that
+ 	\[
+	 	\begin{tikzcd}
+		 	{A_Y} 
+			 	\ar[r,"p'"] 
+			 	\ar[rd,rightarrowtail,"\theta"] &
+		 	{P} 
+			 	\ar[d,"\psi"] 
+			 	\ar[r,rightarrowtail,"\eta"]&
+		 	{T+S} \\
+		 	{} &
+		 	{B_Y} \ar[ur,rightarrowtail] &
+		 	{} 
+	 	\end{tikzcd}
+ 	\]
+ 	which gives us that $\psi$ is monic.  
+ 	
+ 	\textbf{(IX) Show $\psi$ is epic.} Recall a map is epic if and only if its co-kernel pair coincides.  That is we want to show that $\pi=\pi'$ in the pushout diagram
+ 	\[
+ 	\begin{tikzcd}
+	 	{P} \ar[r,"\psi"] \ar[d,"\psi"] &
+	 	{B_Y} \ar[d,"\pi"] \ar[ddr,bend left=20, rightarrowtail] &
+	 	{} \\
+	 	{B_Y} \ar[r,"\pi'"] \ar[rrd, bend right=20,rightarrowtail] &
+	 	{B_Y +_P B_Y} \ar[rd,dashed,"\rho"] &
+	 	{} \\
+	 	{} &
+	 	{} &
+	 	{T+_YS} 
+ 	\end{tikzcd}
+ 	\]
+ 	This also gives us $\rho \from B_Y +_P B_Y \to T+_YS$ and that $\pi,\pi'$ are monic. Note that we also have the pushout diagram
+ 	\[
+ 	\begin{tikzcd}
+	 	{P} 
+		 	\ar[r,rightarrowtail, "\psi f"] 
+		 	\ar[d, "\psi \pi"] &
+	 	{T+_YS} 
+		 	\ar[d,equal] 
+		 	\ar[ddr,bend left=20, "x"] &
+	 	{} \\
+	 	{B_Y +_P B_Y} 
+		 	\ar[r,"\rho"] 
+		 	\ar[rrd, bend right=20,"y"] &
+	 	{T+_YS} 
+		 	\ar[rd,dashed,"x"] &
+	 	{} \\
+	 	{} &
+	 	{} &
+	 	{Q} 
+ 	\end{tikzcd}
+ 	\]
+ 	where $x,y$ are maps making the outer square commute and $f \from B_Y \to T+_YS$ is us finally naming this map. To show this really is a pushout, we need to show $\rho x = y$. This follows from $\psi \pi \rho x =\psi f x = \psi \pi y$ and the fact that $\psi \pi$ is monic.  Because this is a pushout square, which respects monics, we know that $\rho$ is a monic.  Thus $\pi \rho = f = \pi' \rho$ so $\pi = \pi'$.  Therefore $\psi$ is epic.  
+ 	
+ 	\textbf{(X) Wrap up.} Because $\psi$ is epic (regular?) it is an isomorphism.  And so is $p'$ and so because
+ 	\[
+ 	\begin{tikzcd}
+	 	{A_Y} 
+		 	\ar[r,"p'"] 
+		 	\ar[rd,rightarrowtail,"\theta"] &
+	 	{P} 
+		 	\ar[d,"\psi"] \\
+	 	{} &
+	 	{B_Y} 
+ 	\end{tikzcd}
+ 	\]
+ 	we have that $\theta$ is an isomorphism.  
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	So we have a diagram 
+ 	\[
+ 	\begin{tikzcd}[column sep=small,row sep=small]
+	 	{} &
+	 	{} &
+	 	{} &
+	 	{T'} \ar[dr,rightarrowtail] \ar[ddd]&
+	 	{} \\
+	 	%
+	 	{} &
+	 	{T'\times_TT''} \ar[dddl] \ar[ddd,dashed] \ar[dr,rightarrowtail] 
+	 	\ar[rru,rightarrowtail] &
+	 	{} &
+	 	{} &
+	 	{T} \ar[ddd] \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T''} \ar[rru,rightarrowtail, crossing over] &
+	 	{} &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{} &
+	 	{T'+_YS'} \ar[dr] &
+	 	{} \\
+	 	%
+	 	{B} \ar[r,dashed, "\theta" description] \ar[rrru]  &
+	 	{A} \ar[rru,rightarrowtail] \ar[rd,rightarrowtail] &
+	 	{} &
+	 	{} &
+	 	{T+_YS} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T''+_YS''} \ar[uuu,leftarrow, crossing over] &
+	 	{} &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{} &
+	 	{S'} \ar[uuu] \ar[rd,rightarrowtail] &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{S'\times_SS''} \ar[rru,rightarrowtail] \ar[rd,rightarrowtail] 
+	 	\ar[uuu,dashed] \ar[uuul]&
+	 	{} &
+	 	{} &
+	 	{S} \ar[uuu] \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{S''} \ar[uuu,crossing over] \ar[rru,rightarrowtail] &
+	 	{} &
+	 	{} \\
+	 	%
+	 	\ar[from=5-1,to=6-3,crossing over]
+	 	\ar[from=6-3,to=5-5,crossing over, rightarrowtail]
+ 	\end{tikzcd}
+ 	\]
+ 	where the vertical dashed arrows to $A$ are from the universal property of 
+ 	$B$ as a pushout.  This induces $\theta$.  The map $B \to T'+_YS'$ is the 
+ 	same as the dashed arrow in
+ 	\[
+ 	\begin{tikzcd}[column sep=small,row sep=small]
+	 	{} &
+	 	{} &
+	 	{T'\times_TT''} \ar[dr] \ar[ddd,rightarrowtail]&
+	 	{} &
+	 	{} \\
+	 	%
+	 	{Y} \ar[rru] \ar[rd] \ar[ddd,"\cong"]&
+	 	{} &
+	 	{} &
+	 	{(T'\times+_TT'')+(S'\times_SS'')}  \ar[ddd,rightarrowtail] \ar[r] &
+	 	{B} \ar[ddd,dashed]\\
+	 	%
+	 	{} &
+	 	{S'\times_SS''} \ar[rru,crossing over] &
+	 	{} &
+	 	{} &
+	 	{} \\
+	 	%
+	 	{} &
+	 	{} &
+	 	{T'} \ar[dr]&
+	 	{} &
+	 	{} \\
+	 	%
+	 	{Y} \ar[rru] \ar[rd]&
+	 	{} &
+	 	{} &
+	 	{T'+S'} \ar[r]&
+	 	{T'+_YS'} \\
+	 	%
+	 	{} &
+	 	{S'} \ar[rru] &
+	 	{} &
+	 	{} &
+	 	{} 
+	 	%
+	 	\ar[from=3-2,to=6-2,rightarrowtail,crossing over]
+ 	\end{tikzcd}
+ 	\]
+ 	By the above lemma, we know that the dashed arrow is monic.  Thus we have 
+ 	\[
+ 	\begin{tikzcd}
+	 	{B} \ar[r,"\theta"] \ar[rd,rightarrowtail] &
+	 	{A} \ar[d,rightarrowtail] \\
+	 	{} &
+	 	{T'+_YS'}
+ 	\end{tikzcd}
+ 	\]
+ 	which implies that $\theta$ is monic. 
+ \end{proof}
+ 
+ 
+ \pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Latest attempt to prove this thing.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ Throughout, we will work in a topos.  Also, denote
+ \begin{align*}
+	 A & := (T' \times_T T'') + (S' \times_S S'') \\
+	 B & := (T' + S') \times_{T + S} (T'' + S'') \\
+	 A_Y & := (T' \times_T T'') +_Y (S' \times_S S'') \\
+	 B_Y & := (T' +_Y S') \times_{T +_Y S} (T'' +_Y S'').
+ \end{align*}
+ So, we are trying to show that $A_Y \cong B_Y$.  
+ 
+ The outline of the argument will be as follows
+ \begin{itemize*}
+ 	\item Get a commutative triangle
+ 	\[
+ 	\begin{tikzcd}
+ 	{A} \ar[d,"a"] \ar[rd,"a'"]&
+ 	{}  \\
+ 	{A_Y} \ar[r,"\theta"] &
+ 	{B_Y}
+ 	\end{tikzcd}
+ 	\]
+ 	\item Show that $\theta$ is monic.
+ 	\item Show that $a'$ is epic.
+ 	\item Show that $d$ is an isomorphism.
+ 	\item Show that $\theta$ is epic.
+ \end{itemize*}
+ Since we are in a topos, showing that $\theta$ is monic and epic implies it's 
+ an isomorphism.  
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \subsection*{Get that commutative square.}
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ 
+ We start with some technical lemmas.
+ 
+ \begin{lem}
+ 	Working in some category with co-products and pushouts, we have a pushout square
+ 	\[
+ 	\begin{tikzcd}
+ 	{B} \ar[r,"\iota"] \ar[d,rightarrowtail,"g"] &
+ 	{B+C} \ar[d,"f=g+C"] \\
+ 	{X} \ar[r, "\iota"]&
+ 	{X+C}
+ 	\end{tikzcd}
+ 	\]
+ \end{lem}
+ \begin{proof}
+ 	We have 
+ 	\[
+ 	\begin{tikzcd}
+ 	{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+ 	{B+C} \ar[d,"f"] &
+ 	{C} \ar[l,"\iota"] \ar[dl,"\iota"]\\
+ 	{X} \ar[r, "\iota"]&
+ 	{X+C}
+ 	\end{tikzcd}
+ 	\]
+ 	and the pushout square
+ 	\[
+ 	\begin{tikzcd}
+ 	{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+ 	{B+C} \ar[d,"f"] \ar[ddr,bend left]&
+ 	{} \\
+ 	{X} \ar[r, "\iota"] \ar[rrd,bend right] &
+ 	{X+C} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{X+_B(B+C)}
+ 	\end{tikzcd}
+ 	\]
+ 	occupying the outer square of the diagram. 
+ 	Using the universal property of $X+C$ we get
+ 	\[
+ 	\begin{tikzcd}
+ 	{B} \ar[r,"\iota"] \ar[d,rightarrowtail] &
+ 	{B+C} \ar[d,"f"] \ar[ddr,bend left]&
+ 	{C} \ar[l,"\iota"] \ar[dl,"\iota",crossing over]  \\
+ 	{X} \ar[r, "\iota"] \ar[rrd,bend right] &
+ 	{X+C} \ar[dr,dashed]&
+ 	{}\\
+ 	{} &
+ 	{} &
+ 	{X+_B(B+C)}
+ 	\end{tikzcd}
+ 	\]
+ 	That the upper right triangle commutes follows from the universal property of $B+C$.  
+ 	The rest of the proof is straightforward. 
+ \end{proof}
+ 
+ \begin{remark}
+ 	If the pushout discussed in the above lemma is Van Kampen, then $f$ is monic because 
+ 	VK-squares preserve monos.
+ \end{remark}
+ 
+ \begin{lem}
+Consider a diagram
+ \begin{equation} \label{Diag:Lemma}
+ \xymatrix@C=.2in@R=.2in{
+ 	{} &
+ 	{} &
+ 	{B}
+ 	\ar@{>->}[ddd]^(.3){b_x}|\hole
+ 	\ar[dr]^{\iota_b} &
+ 	{} &
+ 	{} \\
+ 	{A} 
+ 	\ar[ddd]_{\cong}^{\phi}
+ 	\ar[dr]^{a_c}
+ 	\ar[urr]^{a_b} &
+ 	{} &
+ 	{} &
+ 	{B+C} 
+ 	\ar@{-->}[ddd]^{i}
+ 	\ar[r]^{[-]_A} &
+ 	{B+_A C} 
+ 	\ar@{-->}[ddd]^{i'} \\
+ 	{} &
+ 	{C} 
+ 	\ar@{>->}[ddd]_(.3){c_y}
+ 	\ar[urr]^(.3){\iota_c} &
+ 	{} &
+ 	{} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{X} 
+ 	\ar[dr]^{\iota_x} &
+ 	{} &
+ 	{} \\
+ 	{W} 
+ 	\ar[dr]_{w_y}
+ 	\ar[urr]^(.25){w_x}|\hole &
+ 	{} &
+ 	{} &
+ 	{X+Y} 
+ 	\ar[r]^{[-]_W} &
+ 	{X+_WY} \\
+ 	{} &
+ 	{Y} 
+ 	\ar[urr]^{\iota_y} &
+ 	{} &
+ 	{} &
+ 	{} \\
+ }
+ \end{equation}
+ where $B \to X$ and $C \to Y$ are monic and $A \to W$ is an iso. Then:
+ \begin{enumerate}
+ 	\item The map $i$ is monic. \label{Lem:Claim1}
+ 	\item The right hand square is a pushout. \label{Lem:Claim2}
+ \end{enumerate} 
+\end{lem}
+ 
+ \begin{proof}
+ 	\textbf{Part (a).} {\color{red} This really follows immediately from the above lemma and pushouts preserve monics in topoi} Consider the diagram
+ 	\[
+ 	\begin{tikzcd}
+ 	{B} \ar[d, rightarrowtail,"b_x"] \ar[r] &
+ 	{B+C} \ar[d,rightarrowtail,"f"] &
+ 	{C} \ar[l] \ar[d,"1"]\\
+ 	{X} \ar[r] \ar[d,"1"] &
+ 	{X+C} \ar[d,rightarrowtail,"g"]&
+ 	{C} \ar[l] \ar[d,"c_y"] \\
+ 	{X} \ar[r]  &
+ 	{X+Y} &
+ 	{Y} \ar[l]
+ 	\end{tikzcd}
+ 	\] 	
+ 	The maps $f$ and $g$ are obtained from the universal property of their domains.  As 
+ 	showed in the above lemma, the upper right and lower left squares are pushouts so, 
+ 	since they are monic pushouts, which we are assuming are monic preserving, we know both 
+ 	$f$ and $g$ are monic. Since the upper and lower half of the diagram commutes, the 
+ 	entire thing commutes.  Hence $f;g$ makes the square minus the co-product injections 
+ 	$X,C \to X+C$ commute. But $i$ is the unique such map, so $i=f;g$ and $i$ is monic.  
+ 	
+ 	\textbf{Part (b).} Let's set up a competitor,
+ 	\[
+ 	\begin{tikzcd}
+ 	{B+C} \ar[r,"{[-]_A}"] \ar[d,"i"] &
+ 	{B+_AC} \ar[d,"i'"] \ar[ddr,bend left=20,"f"]&
+ 	{} \\
+ 	{X+Y} \ar[r,"{[-]_W}"] \ar[drr,bend right=20,"g"]&
+ 	{X+_AY} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	This means that $Q$ is a competetor to
+ 	\[
+ 	\begin{tikzcd}
+ 	{A} \ar[r] \ar[d] &
+ 	{X} \ar[d,"{\iota_X;[-]_W}"] \ar[ddr,bend left=20,"\iota_X;g"]&
+ 	{} \\
+ 	{Y} \ar[r,"{\iota_Y;[-]_W}"] \ar[drr,bend right=20,"\iota_Y;g"]&
+ 	{X+_AY} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	Why? Because (look at the diagram in the statement of the proof where we'll write $a_x$ 
+ 	for $w_x$ composed with the isormorphism from $A \to W$) $a_x\iota_xg= a_b\iota_big = 
+ 	a_c\iota_cig=a_y\iota_yg$. Out pops the unique moprhism $\psi \from X+_AY \to Q$ making 
+ 	the above diagram commute.  The claim is that $\psi$ is the unique morphism making the 
+ 	alleged pushout square commute.  
+ 	
+ 	Is $[-]_W \psi = g$?  Yes, because we have the diagram
+ 	\[
+ 	\begin{tikzcd}
+ 	{X} \ar[r] \ar[dr] &
+ 	{X+Y} \ar[d,dashed] &
+ 	{Y} \ar[l] \ar[dl]\\
+ 	{} &
+ 	{Q} &
+ 	{}
+ 	\end{tikzcd}
+ 	\]
+ 	with the maps $\iota_X[-]_W\psi = \iota_X g \from X \to Q$ and $\iota_Y[-]_W\psi = 
+ 	\iota_Y g \from Y \to Q$ and so there is a unique arrow $X+Y \to Q$, but both 
+ 	$[-]_W\psi$ and $g$ will give us a commuting diagram, so by uniqueness, $[-]_W\psi=g$.  
+ 	
+ 	Is $i'[-]_W=f$? We're going to use the fact that $Q$ is a competitor to
+ 	\[
+ 	\begin{tikzcd}
+ 	{A} \ar[r] \ar[d] &
+ 	{B} \ar[d] \ar[ddr]&
+ 	{} \\
+ 	{C} \ar[r] \ar[drr]&
+ 	{B+_AC} &
+ 	{} \\
+ 	{} &
+ 	{} &
+ 	{Q}
+ 	\end{tikzcd}
+ 	\]
+ 	Note that the maps $B \to Q$, we have 
+ 	\[
+ 	\iota_B [-]_A f 
+ 	= \iota_B i g 
+ 	= \iota_B i [-]_W \psi
+ 	= \iota_B [-]_A i' \psi
+ 	\]
+ 	and similarly for the map $C \to Q$, we have
+ 	\[
+ 	\iota_C [-]_A f 
+ 	= \iota_C i g 
+ 	= \iota_C i [-]_W \psi
+ 	= \iota_C [-]_A i' \psi.
+ 	\]
+ 	So both $f,i' \psi \from B+_AC \to Q$ will allow the above diagram to commute, and so 
+ 	by universality, $f=i'\psi$.  
+ 	
+ 	Therefore, 
+ 	\[
+ 	\begin{tikzcd}
+ 	{B+C} \ar[r,"{[-]_A}"] \ar[d,"i"] &
+ 	{B+_AC} \ar[d,"i'"]\\
+ 	{X+Y} \ar[r,"{[-]_W}"] &
+ 	{X+_AY} \\
+ 	\end{tikzcd}
+ 	\]
+ 	is a pushout. 	{\color{red} Still need universailty.  It likely comes from the universality from the the pushouts on the top and bottom of the diagram. }
+ \end{proof}
+ 
+ \begin{cor}
+ 	The map $i'$ above is monic.
+ \end{cor}
+ 
+ The above lemma gives us monics $c,c_y$ via the diagram
+ \[
+ \begin{tikzcd}[column sep=.5em,row sep=.5em]
+ {} &
+ {} &
+ {T'\times_TT''} \ar[dr] \ar[ddd,rightarrowtail]&
+ {} &
+ {} \\
+ %
+ {Y} \ar[rru] \ar[rd] \ar[ddd,"\cong"]&
+ {} &
+ {} &
+ {A} \ar[ddd,dashed,rightarrowtail, "c"] \ar[r] &
+ {A_y} \ar[ddd,dashed,"c_y"]\\
+ %
+ {} &
+ {S'\times_SS''} \ar[rru,crossing over] &
+ {} &
+ {} &
+ {} \\
+ %
+ {} &
+ {} &
+ {T} \ar[dr]&
+ {} &
+ {} \\
+ %
+ {Y} \ar[rru] \ar[rd]&
+ {} &
+ {} &
+ {T+S} \ar[r]&
+ {T+_YS} \\
+ %
+ {} &
+ {S} \ar[rru] &
+ {} &
+ {} &
+ {} 
+ %
+ \ar[from=3-2,to=6-2,rightarrowtail,crossing over]
+ \end{tikzcd}
+ \]
+ We get maps $c',c_y',c'',c_y''$ the same way.
+ 
+ With these maps in hand, we can obtain the desired the commuting square from the following 
+ diagram
+ \[
+ \begin{tikzcd}
+ {} &
+ {} &
+ {} &
+ {T'+S'} 
+ \ar[rd,rightarrowtail]
+ \ar[ddd,twoheadrightarrow]&
+ {} \\
+ %
+ {A} 
+ \ar[ddd,twoheadrightarrow,"a"]  
+ \ar[rrru,bend left=15,"c'"] &
+ {B} 
+ \ar[urr,rightarrowtail]
+ \ar[dr,rightarrowtail] &
+ {} &
+ {} &
+ {T+S} 
+ \ar[ddd,twoheadrightarrow]\\
+ %
+ {} &
+ {} &
+ {T''+S''} &
+ {} &
+ {} \\
+ %
+ {} &
+ {} &
+ {} &
+ {T'+_YS'} 
+ \ar[dr,rightarrowtail]&
+ {} \\
+ %
+ {A_Y} 
+ \ar[rrru,bend left=20,"c'_y"] 
+ \ar[r,rightarrowtail, dashed,"\theta"]
+ \ar[rrd,bend right=20,"c''_y"] &
+ {B_Y} 
+ \ar[rru,rightarrowtail] &
+ {} &
+ {} &
+ {T+_YS} \\
+ %
+ {} &
+ {} &
+ {T''+_YS''} &
+ {} &
+ {}
+ %
+ %
+ \ar[from=2-2,to=5-2,crossing over,dashed,"b"]
+ \ar[from=2-1,to=3-3,crossing over, bend right=20,  "c''" near start]
+ \ar[from=3-3,to=2-5,crossing over,rightarrowtail]
+ \ar[from=2-1,to=2-5,crossing over,bend left=15,"c"]
+ \ar[from=5-1,to=5-5,bend right=10,"c_y"]
+ \ar[from=3-3,to=6-3,crossing over,twoheadrightarrow]
+ \ar[from=5-2,to=6-3,crossing over,rightarrowtail]
+ \ar[from=6-3,to=5-5,crossing over,rightarrowtail]
+ \ar[from=2-1,to=2-2,rightarrowtail,dashed,swap,"d"]
+ \end{tikzcd}
+ \]
+ The map $d \from A \to B$ is from the top square pull back and monic since $c,c',c''$ are. 
+ The map $b \from B \to B_Y$ is from the bottom square pullback.  The star of the show, 
+ $\theta \from A_Y \to B_Y$ is from the bottom square pullback and is monic since 
+ $c_y,c_y',c_y''$ are.  
+ 
+ The remainder of the proof is to show that $\theta$ is epic. The first step is to show 
+ that $b$ is epic.
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \subsection*{The map $b \from B \to B_Y$ is epic.}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  Again, we introduce some technical results to use.
+  
+  \begin{lem}
+  	Given a diagram
+  	\[
+  	\begin{tikzcd}
+	  	{\bullet} \ar[r] \ar[d] &
+	  	{\bullet} \ar[r] \ar[d] &
+	  	{\bullet} \ar[d]\\
+	  	{\bullet} \ar[r]&
+	  	{\bullet} \ar[r] &
+	  	{\bullet} \\
+  	\end{tikzcd}
+  	\]
+  	such that the outer and left squares are pushouts, then the right square is a pushout. 
+  \end{lem}
+  
+  Using this lemma, we know that the vertical facing, right squares are pushouts.  The next 
+  lemma comes from Adhesive Categories from Lack and Sobocinski Lemma 6.3.
+  
+  \begin{lem}
+  	Given a cube in which all arrows in the top and bottom faces are monic, if the top face 
+  	is a pullback and the front faces are pushouts, then the bottom face is a pullbck if 
+  	and only if the back faces are pushouts.
+  \end{lem}
+  
+  It follows that the left faces of the above diagram are pushouts.  Since they are over 
+  monics, they are also pullbacks which respect regular epimorphisms. Now $T+S 
+  \to T +_Y S$ 
+  and the single and double prime cases are regular epis.  Hence $b \from B \to B_Y$ is 
+  epic.  
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \subsection*{$A$ is isomorphic to $B$.}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  Here we use the fact that subobject categories in a topos are distributive lattices.  But 
+  first, we show that $B$ is isomorphic to something nice.
+  
+  \begin{lem}
+  In a topos, we have that colimits are stable under pullback.  That is, given a diagram $D 
+  \from D \to C$, we have that
+  \[
+  \begin{tikzcd}
+	  {(\op{colim}_D F) \times_Z Y } \ar[d] \ar[r]&
+	  {\op{colim}_D F} \ar[d]\\
+	  {Y} \ar[r]&
+	  {Z}
+  \end{tikzcd}
+  \]
+  and $(\op{colim}_D F) \times_Z Y \cong \op{colim}_{d \in D} (F(d) \times_Z Y)$. 
+  \end{lem}
+  
+  For us, we hit $B$ with this lemma:
+  \begin{align*}
+  B & = (T'+S') \times_{T+S} (T''+S'') \\
+	  & \cong (T'\times_{T+S}T'')+(T'\times_{T+S}S'') + (S'\times_{T+S}T'')+ 
+	  (S'\times_{T+S}S'').
+  \end{align*}
+  
+  But $(T'\times_{T+S}S'')$ and $(S'\times_{T+S}T'')$ are initial. Indeed we 
+  have the diagram
+  \[
+  \begin{tikzcd}
+	  {T'\times_{T+S}S''} \ar[rr] \ar[dd] \ar[dr,dashed]&
+	  {} &
+	  {S''} \ar[d] \\
+	  {} &
+	  {\emptyset} \ar[d] \ar[r] &
+	  {S} \ar[d]\\
+	  {T'} \ar[r] &
+	  {T} \ar[r]&
+	  {T+S}
+  \end{tikzcd}
+  \]
+  where the inner and outer squares are pullbacks and all maps are monics (we 
+  use that pullbacks preserve monics), in particular the dashed map.  The same 
+  argument shows that $(S'\times_{T+S}T'')$ is initial.  It follows that $B 
+  \cong (T'\times_{T+S}T'')+ (S'\times_{T+S}S'')$.  {\color{red} Initial objects are strict in topoi}
+  
+  Next, we show that $T'\times_TT'' \cong T' \times_{T+S}T''$ and ditto for 
+  $S$.  We have the diagrams
+  \[
+  \begin{tikzcd}
+	  {} &
+	  {T'\times_TT''} \ar[d,dashed] \ar[ddl,bend right=20] \ar[ddr,bend 
+	  left=20] &
+	  {} \\
+	  {} &
+	  {T'\times_{T+S}T''} \ar[dr] \ar[dl] &
+	  {} \\
+	  {T'} \ar[dr] \ar[r] &
+	  {T} \ar[d]&
+	  {T''} \ar[dl] \ar[l]\\
+	  {} &
+	  {T+S} &
+	  {}
+  \end{tikzcd}
+  %
+  \begin{tikzcd}
+  {} &
+  {T'\times_{T+S}T''} \ar[d,dashed] \ar[ddl,bend right=20] \ar[ddr,bend 
+  left=20] &
+  {} \\
+  {} &
+  {T'\times_{T}T''} \ar[dr] \ar[dl] &
+  {} \\
+  {T'} \ar[dr] \ar[r] &
+  {T} \ar[d]&
+  {T''} \ar[dl] \ar[l]\\
+  {} &
+  {T+S} &
+  {}
+  \end{tikzcd}
+  \]
+  In both diagram, we have two pullback squares, $T'\times_TT''$ over $T$ and 
+  $T' \times_{T+S}T''$ over $T+S$.  On the left, it's clear that everything 
+  commuting makes $T'\times_TT''$ a competitor, giving us the universal map.  
+  On the right, we have the outside paths commute, so we can detour on each 
+  side through $T$ towards $T+S$.  But since $T \to T+S$ is monic, we can stop 
+  the paths at $T$ and they'll commute.  Hence the universal map on the right.  
+  Moreover, everything is monic.  Therefore, in $\op{Sub} (T+S)$, we get that 
+  $T'\times_TT'' = T' \times_{T+S}T''$ and they are isomorphic in our category. 
+  Similarly, $S'\times_SS'' = S' \times_{T+S}S''$.  It follows that $A \cong 
+  B$. 
+  
+  We still need to show that $d$ is isormophism.  But we can do this by super 
+  imposing the diagrams we used to get the $c$ type maps and the pullbacks used 
+  to show $A \cong B$.  It's doable and I'll do it later.
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \subsection*{$\theta$ is epic.}
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  So we have that $d;b=a;\theta$ from that commuting square we initially had.  
+  And we've shown that $d$ and $b$ are epic.  So $d;b$ is epic and so $\theta$ 
+  is epic.  Hence $\theta$ is an isomorphism.  
+  
+  CELEBRATE!!!
+  
+  
+ 
+ \pagebreak 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Everything below is garbage.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Because $([a]',[b]'')$ ($([a']',[b']'')$) are in $(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')$, we know that $[a]'$ and $[b]''$ (and $[a']'$ and $[b']''$) have the same image in $T +_Y S$.  So, either there this image has an empty pre-image in $Y$ or not.  If not {\color{red} SEE ABOVE}.  Suppose the pre-image is non-empty in $Y$. WLOG, $a \in T'$ and $b \in T''$ (by the nature of the domain of $\theta$).  Since the image of $a$ and $b$ in $T +_Y S$ are identified, there is a $y \in Y$ hitting the image of $a,b$ in $T +_Y S$. Moreover, since the image of $a,b$ in $T$ are the same, and the maps $T',T'' \to T$ are monic, we know $y \mapsto a,b$ in $T',T''$, respectively.  Similarly, there's a $y' \in Y$ hitting the image of $a',b'$ in $T',T''$ (or maybe $S',S''$) and therefore, the image of $a',b'$ in $T +_Y S$. This implies that $y$ hits $(a,b)$ in $T' \times_T T''$ and $y'$ hits $(a',b')$ in whichever of $T' \times_T T''$ or $S' \times_S S''$. Moreover, since $[a]'=[a']'$ there is a sequence $y=y_1, \dotsc, y_n=y'$ relating them in $T' +_Y S'$. This sequence relates $[a]$ and $[a']$ in $T+_Y S$ and so also $[b]$ and $[b']$ in $T+_YS$. I'm pretty sure we can use the fact that $T'' \to T$ and $S'' \to S$ are monic to show that the above sequence of $y_i$'s relates $b$ and $b'$ in $T'' +_Y S''$.  Then show that this sequence relates $(a,b)$ and $(a',b')$ in $(T' \times_T T'') \times_Y (S' \times_S S'')$.  We definitely have that $y_1 \mapsto [(a,b)]$ and $y_n \mapsto [(a',b')]$.  
+
+
+\subsection*{Define the inverse map}
+
+Consider the function 
+\[
+	(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') \to (T' \times_T T'') +_Y (S' \times_S S'')
+\]
+given by $([a]',[b]'') \mapsto ([a,b])$ \textit{(Note: we'll have to split this definition up piecewise so that $([a]',[b]'')$ is sent to the image of the $y$ going to $[a]'$ and $[b]''$ and hopefully it will be forced to be the same $y$, or if there is no such $y$ for either $a$ or $b$, then there can't be a $y$ for the other in which case we know that both $a \in T'$ and $b \in T''$ or both in the $S$'s so we can use the appropriate inclusion map from there.)}, where $[-]'$ denotes the class in $T'+_YS'$ and similarly, $[-]''$ for $T''+_YS''$.  We need to show that the image of this map is actually in the co-domain.  This translates to showing that if $[a]' \in T' +_Y S'$ is included via $T'$, then $[b]'' \in T'' +_Y S''$ is included via $T''$.  This is sufficient, since the same argument will work if the the elements are included via $S'$ and $S''$ instead.  Next, we will need to show the map is well-defined in the usual sense of independence of chosen representative.  
+
+Let $([a]',[b]'') \in (T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')$ such that $a \in T'$.  Note that
+\[
+	\left\langle t'_Tq_T,s'_Sq_S \right\rangle ([a]') 
+		= \left\langle t''_Tq_T,s''_Sq_S \right\rangle ([b]'').
+\]  
+We first consider the case where there is a $y \in Y$ such that $y_{T'}(y)=a$.  Because $y_{T'};t'_{T}=y_T=y_{T''};t''_T$  (see \eqref{Diag:ToBeComposed}), we have that $y_{T''}(y) \in T'$ is mapped to $t'_T(a) \in T$ via $t''_{T}$. Denote $y_{T''}(y)$ by $b_0$. It suffices to show that $b$ (as living in either $T''$ or $S''$) is in the image of some $y' \in Y$.  The inclusion $q_T \from T \to T+_YS$ respects that $t'_T(a)=t''_T(b_0)$ in $T$, so $[t'_T (a)] = [t''_T (b_0)]$. Thus
+\[
+	\left\langle t'_Tq_T,s'_Sq_S \right\rangle ([a]') 
+	= \left\langle t''_Tq_T,s''_Sq_S \right\rangle ([b_0]'')
+\]
+from which is follows that
+\[
+	[c] 
+		:=\left\langle t''_Tq_T,s''_Sq_S \right\rangle ([b]'')
+		= \left\langle t''_Tq_T,s''_Sq_S \right\rangle ([b_0]'').
+\]
+Notice that $[b]'' \in T'' +_Y S''$ is in the image from $Y$.  Suppose not. Consider mapping $b$ to $T +_Y S$ by first hitting it with $t'_T$ or $s'_S$ (depending on whether $b$ lives in $T''$ or $S''$) then including it into $T +_Y S$. We know that the image of $b$ inside whichever of $T$ or $S$ it lives in cannot be an image of anything in $Y$.  This follows from the equalities $y_T = y_{T''}t''_T$ and $y_S = y_{S''}t''_S$ (see \eqref{Diag:ToBeComposed}).  But because $t''_T(b_0)=y_T(y)$, there is no way that both $b$ and $b_0$ are sent to $[c] \in T +_Y S$ because a necessary condition for distinct elements to be identified is to both be in the image from $Y$.  Let $y' \in Y$ be the element mapping to $b_0$.  Then $[b_0]''=[t''_{T}(y')]''$ and since $t''_{T}(y') \in T''$, we conclude that $[b_0]''$ is included into $T'' +_Y S''$ via $T''$.  \textit{(It's likely possible to do this without dealing with $b_0$ and instead using the same argument on $a$ and $b$.)}
+
+Now consider the case where there is no $y$ mapped to $a$.  
+
+
+
+\subsection{Question}
+
+Is there any result like, for $x \neq x'$, $[x]=[x']$ in $T +_Y S$ iff for any $[w]',[w']'$ with $[w] \mapsto [x]$ and same with the prime, that $[w]=[w]'$? Or some sort of way to lift the equivalence classes in $T +_Y S$ to $T' +_Y S'$ and $T''+_Y S''$ for from those back to $T +_YS$.
+
+
+
+
+
+
+
+\section{Come back}
+
+Now, recall that $(T' \times_T T'') +_Y (S' \times_S S'')$ is the set of pairs formed by taking the disjoint union of $T' \times_T T''$ and $S' \times_S S''$, then making identifications governed by the equivalence relation generated by $(t',t'') \sim (s',s'')$ iff there is a $y$ such that $(t',t'') = [y_{T'},y_{T''}](y)$ and $[y_{S'},y_{S''}](y) = (s',s'')$.  
+
+And the set $(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')$ is the set of pairs $([a],[b])$ of equivalence classes, first, whose 
+\begin{itemize*}
+	\item first factor is the class generated by $t' \sim s'$ iff there is a $y$ such that $t' = y_{T'}(y) = y_{S'}(y) = s'$
+	\item second factor is the class generated by $t'' \sim s''$ iff there is a $y$ such that $t'' = y_{T''}(y) = y_{S''}(y) = s''$,
+\end{itemize*}
+and, second, such that $\left\langle t'_{T}q_T,s'_{S}q_S \right\rangle [a]= \left\langle t''_{T}q_T,s''_{S}q_S \right\rangle [b]$.
+
+	
+Try this out: define $\theta [a,b] = ([a],[b])$. 
+
+Let's first check that it's well-defined, which requires checking two things: that class representative doesn't matter and that the image is actually contained in the co-domain. As to the former, use induction on the length of a chain of equivalences.  That is, show that $\theta [a,b] = \theta [a',b']$ if $[a,b] = [a',b']$ via a chain $(a,b) = (a_1,b_1) \sim (a_2,b_2) \sim \dotsm \sim (a_n,b_n) = (a,b)$. First, if there is a $y \in Y$ such that $(a_1,b_1) = [y_{T'},y_{T''}](y)$ and $(a_2,b_2)=[y_{S'},y_{S''}](y)$, then 
+\begin{itemize}
+	\item $a_1 = y_{T'}(y)$,  $a_2 = y_{S'}(y)$ implies $[a_1]=[a_2]$ in $T' +_Y S'$ 
+	\item $b_1 = y_{T''}(y)$, $b_2 = y_{S''}(y)$ implies $[b_1]=[b_2]$ in $T'' +_Y S''$
+\end{itemize}
+and so $([a_1],[b_1])=([a_2],[b_2])$. To finish, apply the induction hypothesis and then use the chain of length one case to get the chain of length $n+1$ case. That we're working in an equivalence class makes this step trivial.  We will now show that $([a],[b]) \in (T' +_Y S') \times_{T +_Y S} (T'' +_Y S'')$ whenever $[(a,b)] \in (T' \times_T T'') +_Y (S' \times_S S'')$.  Certainly, $[a] \in T' +_Y S'$ and $[b] \in T'' +_Y S''$.   But does $\left\langle t'_{T}q_T,s'_{S}q_S \right\rangle [a]= \left\langle t''_{T}q_T,s''_{S}q_S \right\rangle [b]$?  
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

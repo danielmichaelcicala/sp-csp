@@ -1,0 +1,43 @@
+\documentclass[tikz, preview]{standalone}
+
+\usepackage{amsfonts, amsthm, amssymb, amsmath, stmaryrd, etoolbox}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows}
+
+\begin{document}
+\[
+\begin{tikzpicture}
+\node (B) at (-1,1) {$S'$};
+\node (A) at (0,1) {$Y$};
+\node (C) at (1,1) {$T'$};
+\node (B') at (-1,0) {$S$};
+\node (A') at (0,0) {$Y$};
+\node (C') at (1,0) {$T$};
+%
+\draw [->] (A) edge (B);
+\draw [font=\scriptsize,->] (A) edge node[right] {$=$} (A');
+\draw [->] (A) edge (C);
+\draw [->] (A') edge (B');
+\draw [->] (A') edge (C');
+\draw [>->] (B) edge (B');
+\draw [>->] (C) edge (C');
+\end{tikzpicture}
+\quad
+\begin{tikzpicture}[baseline=(current  bounding  box.center)]
+\node (B) at (-1,1) {$S''$};
+\node (A) at (0,1) {$Y$};
+\node (C) at (1,1) {$T''$};
+\node (B') at (-1,0) {$S$};
+\node (A') at (0,0) {$Y$};
+\node (C') at (1,0) {$T$};
+%
+\draw [->] (A) edge (B);
+\draw [font=\scriptsize,->] (A) edge node[right] {$=$} (A');
+\draw [->] (A) edge (C);
+\draw [->] (A') edge (B');
+\draw [->] (A') edge (C');
+\draw [>->] (B) edge (B');
+\draw [>->] (C) edge (C');
+\end{tikzpicture}
+\]
+\end{document}

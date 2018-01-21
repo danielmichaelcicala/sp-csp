@@ -1,0 +1,739 @@
+\documentclass[12pt]{article}
+\usepackage[latin1]{inputenc}
+
+%--------------- LOAD PACKAGES -------------------------
+
+\RequirePackage{amsfonts}
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{comment}
+\RequirePackage{stmaryrd}
+\RequirePackage{etoolbox}
+\RequirePackage{mathtools}
+\RequirePackage{amsmath}
+\RequirePackage{mdwlist}
+\RequirePackage{mathrsfs}
+\RequirePackage{enumitem}
+\setlist{itemsep=0em, topsep=0em, parsep=0em}
+\setlist[enumerate]{label=(\alph*)}
+\RequirePackage{tikz, tikz-cd}
+\usetikzlibrary{matrix,arrows}
+\RequirePackage{multicol}
+\RequirePackage{arydshln,leftidx}
+\RequirePackage[breaklinks,hidelinks]{hyperref}
+\hypersetup{colorlinks,linkcolor={blue}}
+\RequirePackage{subfiles}
+\RequirePackage{makeidx}
+\RequirePackage{multirow}
+\RequirePackage{graphicx}
+\RequirePackage[all]{xy}
+
+%------------------ NEW COMMANDS -----------------------
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\renewcommand{\epsilon}{\varepsilon}
+
+\newcommand{\entry}[1]{\section*{#1} \index{#1} \label{#1}}
+\newcommand{\cat}[1]{\mathtt{#1}}
+\newcommand{\define}[1]{\emph{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\scr}[1]{\mathscr{#1}}
+\newcommand{\op}[1]{\operatorname{#1}}
+\renewcommand{\t}[1]{\textup{#1}}
+\renewcommand{\and}{\textup{ and }}
+
+\newcommand{\from}{\colon}
+\newcommand{\xto}[1]{\xrightarrow{#1}}
+\newcommand{\unto}{\leftarrow}
+\newcommand{\xunto}[1]{\xleftarrow{#1}}
+\newcommand{\sm}{\smallsetminus}
+\renewcommand{\(}{\left(}
+\renewcommand{\)}{\right)}
+\renewcommand{\ss}[2]{_{#1}^{#2}}
+\renewcommand{\{}{\left\lbrace}
+\renewcommand{\}}{\right\rbrace}
+\renewcommand{\hat}{\widehat}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\bar}{\overline}
+
+
+%-------------- DECLARE MATH OPERATORS ------------------
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\ob}{Ob}
+\DeclareMathOperator{\arr}{arr}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Bij}{Bij}
+
+%--------- ENVIRONMENTS BEYOND CLASS FILE -----------------
+
+\renewcommand{\thesection}
+
+\newtheorem*{thm}{Theorem}
+\newtheorem*{lem}{Lemma}
+\newtheorem*{prop}{Proposition}
+\newtheorem*{cor}{Corollary}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{notation}{Notation}
+
+\theoremstyle{definition}
+\newtheorem*{ex}{Example} 
+\newtheorem*{defn}{Definition}
+
+%-------------- BIBLIOGRAPHY STYLE / INDEX ---------------------
+
+\bibliographystyle{plain}
+\makeindex
+
+\begin{document}
+	\[
+	\xymatrix{
+		{} &
+		{} &
+		L+_YL' &
+		{} &
+		{} \\
+		{} &
+		L  
+		\ar[ru]|{\ell} &
+		{} &
+		L' 
+		\ar[lu]|{\ell}&
+		{} \\
+		{} &
+		T' 
+		\ar[u]|{t'_L}
+		\ar[d]|{t'_T} &
+		{} &
+		S' 
+		\ar[u]|{s'_{L'}}
+		\ar[d]|{s'_S}&
+		{} \\
+		X 
+		\ar[ruu]|{x_L}
+		\ar[ru]|{x_{T'}}
+		\ar[r]|{x_T}
+		\ar[rd]|{x_{T''}}
+		\ar[rdd]|{x_R}&
+		T &
+		Y 
+		\ar[luu]|{y_{L}}
+		\ar[lu]|{y_{T'}}
+		\ar[l]|{y_{T}}
+		\ar[ld]|{y_{T''}}
+		\ar[ldd]|{y_{R}}
+		\ar[ruu]|{y_{L'}}
+		\ar[ru]|{y_{S'}}
+		\ar[r]|{y_{S}}
+		\ar[rd]|{y_{S''}}
+		\ar[rdd]|{y_{R'}} &
+		S &
+		Z 
+		\ar[luu]|{z_{L'}}
+		\ar[lu]|{z_{S'}}
+		\ar[l]|{S}
+		\ar[ld]|{S''}
+		\ar[ldd]|{R'}\\
+		{} &
+		T'' 
+		\ar[u]|{t''_T}
+		\ar[d]{t''_R}&
+		{} &
+		S'' 
+		\ar[u]|{s''_S}
+		\ar[d]|{s''_{R'}}&
+		{} \\
+		{} &
+		R 
+		\ar[rd]|{r_+}
+		{} &
+		{} &
+		R' 
+		\ar[ld]|{r'_+} \\
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{}
+	}
+	%
+	%
+	\xymatrix@C=.2in@R=.2in{
+		{} &
+		{} &
+		{B}
+		\ar@{>->}[ddd]^(.3){b_x}|\hole
+		\ar[dr]^{\iota_b} &
+		{} &
+		{} \\
+		{A} 
+		\ar[ddd]_{\cong}^{\phi}
+		\ar[dr]^{a_c}
+		\ar[urr]^{a_b} &
+		{} &
+		{} &
+		{B+C} 
+		\ar@{-->}[ddd]^{i}
+		\ar[r]^{[-]_A} &
+		{B+_A C} 
+		\ar@{-->}[ddd]^{i'} \\
+		{} &
+		{C} 
+		\ar@{>->}[ddd]_(.3){c_y}
+		\ar[urr]^(.3){\iota_c} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{X} 
+		\ar[dr]^{\iota_x} &
+		{} &
+		{} \\
+		{W} 
+		\ar[dr]_{w_y}
+		\ar[urr]^(.25){w_x}|\hole &
+		{} &
+		{} &
+		{X+Y} 
+		\ar[r]^{[-]_W} &
+		{X+_WY} \\
+		{} &
+		{Y} 
+		\ar[urr]^{\iota_y} &
+		{} &
+		{} &
+		{} \\
+	}
+	\]
+	
+	\[
+	\xymatrix@C=.5cm{
+		{} &
+		{} &
+		{} &
+		L +_Y L' &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		(T' +_Y S') \times_{T +_Y S} (T'' +_Y S'') 
+		\ar[luu]|{\pi'_X \left\langle t'_L\ell, s'_L\ell' \right\rangle}
+		\ar[ldddd]
+		|(.39)\hole
+		|>>>>>>>>>>>>>>>>>>{ \pi''_X \left\langle t'_L\ell, s'_L\ell' \right\rangle }  &
+		{} &
+		{} \\
+		X 
+		\ar@/^2pc/[rrruuu]|{x_L \ell} 
+		\ar[rrrru]
+		|<<<<<<<<<<<<<<<<<<<<<<<{ \left[ x_{T'}q_{T'}, x_{T''}q_{T''} \right] } 
+		|(.46)\hole
+		\ar[rrd]|{ \left[ x_{T'},x_{T''}, \right] i_T }
+		\ar@/_2pc/[rrrddd]|{x_R r} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		Z 
+		\ar@/_2.5pc/[llluuu]|{z_L \ell'}
+		\ar[llu]|{ \left[ z_{S'}q_{S'},z_{S''}q_{S''} \right] } 
+		\ar[lllld]|<<<<<<<<<<<<<<<<<<<{ \left[ z_{S'},z_{S''} \right] i_S  }
+		\ar@/^2pc/[lllddd]|{z_R r'} \\
+		{} &
+		{} &
+		(T' \times_T T'') +_Y (S' \times_S S'') 
+		\ar[ruuuu]|>>>>>>>>>>>>>{ \left\langle p_{T'}t'_L\ell, p_{S'} s'_{L'}\ell' \right\rangle }
+		\ar@{-->}[rruu]^{\theta}
+		\ar[rdd]|{ \left\langle p_{T''} t''_Rr, p_{S''}s''_{R'}r' \right\rangle  } &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} &
+		{} \\
+		{} &
+		{} &
+		{} &
+		R +_Y R' &
+		{} &
+		{} &
+		{} 
+	}
+	\]
+
+	\begin{thm}
+		Let's assume that we're in a category where monic and epi implies iso, like 
+		a topos. There is an isomorphism $A \cong B$, where $A := 
+		(T'+_YS')\times_{T+_YS}(T''+_YS'')$ and $B := (T' \times_T T'') +_Y 
+		(S'\times_SS'')$.  
+	\end{thm}
+	
+	\begin{proof}
+		Write
+		\begin{align*}
+		&A := (T' \times_T T'') + (S'\times_SS'') \\
+		&A_y  := (T' \times_T T'') +_Y (S'\times_SS'') \\
+		&B  := (T'+S') \times_{T+S} (T''+S'') \\ 
+		&B_y := (T'+_YS') \times_{T+_YS} (T''+_YS'') \\
+		\end{align*}
+		
+		%---------------- Part I of Proof ---------------------
+		
+		\textbf{(I) Use lemma to get maps.}  The above lemma gives us monics $c,c_y$ via the diagram
+		\[
+		\begin{tikzcd}[column sep=.5em,row sep=.5em]
+		{} &
+		{} &
+		{T'\times_TT''} \ar[dr] \ar[ddd,rightarrowtail]&
+		{} &
+		{} \\
+		%
+		{Y} \ar[rru] \ar[rd] \ar[ddd,"\cong"]&
+		{} &
+		{} &
+		{A} \ar[ddd,dashed,rightarrowtail, "c"] \ar[r] &
+		{A_y} \ar[ddd,dashed,"c_y"]\\
+		%
+		{} &
+		{S'\times_SS''} \ar[rru,crossing over] &
+		{} &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{T} \ar[dr]&
+		{} &
+		{} \\
+		%
+		{Y} \ar[rru] \ar[rd]&
+		{} &
+		{} &
+		{T+S} \ar[r]&
+		{T+_YS} \\
+		%
+		{} &
+		{S} \ar[rru] &
+		{} &
+		{} &
+		{} 
+		%
+		\ar[from=3-2,to=6-2,rightarrowtail,crossing over]
+		\end{tikzcd}
+		\]
+		We get maps $c',c_y',c'',c_y''$ the same way.
+		
+		%---------------- Part II of Proof ---------------------
+		
+		\textbf{(II) Find the desired map and show it's monic.} 
+		
+		Consider the following diagram:
+		\[
+		\begin{tikzcd}
+		{} &
+		{} &
+		{} &
+		{T'+S'} 
+		\ar[rd,rightarrowtail]
+		\ar[ddd,twoheadrightarrow]&
+		{} \\
+		%
+		{A} 
+		\ar[ddd,twoheadrightarrow,"a"]  
+		\ar[rrru,bend left=15,"c'"] &
+		{B} 
+		\ar[urr,rightarrowtail]
+		\ar[dr,rightarrowtail] &
+		{} &
+		{} &
+		{T+S} 
+		\ar[ddd,twoheadrightarrow]\\
+		%
+		{} &
+		{} &
+		{T''+S''} &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{} &
+		{T'+_YS'} 
+		\ar[dr,rightarrowtail]&
+		{} \\
+		%
+		{A_Y} 
+		\ar[rrru,bend left=20,"c'_y"] 
+		\ar[r,rightarrowtail, dashed,"\theta"]
+		\ar[rrd,bend right=20,"c''_y"] &
+		{B_Y} 
+		\ar[rru,rightarrowtail] &
+		{} &
+		{} &
+		{T+_YS} \\
+		%
+		{} &
+		{} &
+		{T''+_YS''} &
+		{} &
+		{}
+		%
+		%
+		\ar[from=2-2,to=5-2,crossing over,dashed,"b"]
+		\ar[from=2-1,to=3-3,crossing over, bend right=20,  "c''" near start]
+		\ar[from=3-3,to=2-5,crossing over,rightarrowtail]
+		\ar[from=2-1,to=2-5,crossing over,bend left=15,"c"]
+		\ar[from=5-1,to=5-5,bend right=10,"c_y"]
+		\ar[from=3-3,to=6-3,crossing over,twoheadrightarrow]
+		\ar[from=5-2,to=6-3,crossing over,rightarrowtail]
+		\ar[from=6-3,to=5-5,crossing over,rightarrowtail]
+		\ar[from=2-1,to=2-2,rightarrowtail,dashed,swap,"d"]
+		\end{tikzcd}
+		\]
+		The map $d \from A \to B$ is from the top square pull back and monic since $c,c',c''$ are. The map $b \from B \to B_Y$ is from the bottom square pullback.  The star of the show, $\theta \from A_Y \to B_Y$ is from the bottom square pullback and is monic since $c_y,c_y',c_y''$ are.  
+		
+		Regardless of us assuming anything about the regularity of our category, the vertical maps $T+S \to T+_YS$, $T'+S' \to T'+_YS'$, $T''+S'' \to T''+_YS''$ are regular.  Recall that $Y$ is a cone over the diagram in two different ways, via the $T$ side and via the $S$ side. This gives two different maps for each of $Y \to T+S$,$Y \to T'+S'$,$Y \to T''+S''$.  It is easy to check that the vertical epis are co-equalizers of these maps.  
+		
+		The remainder of the proof is to show that $\theta$ is epic.
+		
+		\textbf{(III) Get the pushout of the left square.} Let $P$ be the pushout
+		\[
+		\begin{tikzcd}
+		{A} 
+		\ar[r,rightarrowtail,"d"]
+		\ar[d,twoheadrightarrow,"a"] &
+		{B} \ar[d,twoheadrightarrow,"p"] \\
+		{A_Y} \ar[r,rightarrowtail, "p'"] &
+		{P} 
+		\end{tikzcd}
+		\] 
+		where $p$ is epic and $p'$ monic since pushouts preserve these properties.
+		
+		\textbf{(IV) The projection $p$ is a co-equalizer.} We have maps $t_a,s_a \from Y \to A$ and $t_b,s_b \from Y \to B$.  Check that $a$ is the co-equalizer of $t_a,s_a$.  We will show that $p \from B \to P$ is the co-equalizer of $t_b,s_b$.  
+		
+		Let's discuss the diagram
+		\[
+		\begin{tikzcd}
+		{Y} 
+		\ar[r,equal]
+		\ar[d,shift left=1,"s_a"]
+		\ar[d,shift left=-1,swap,"t_a"]&
+		{Y} 
+		\ar[d,shift left=1,"s_b"]
+		\ar[d,shift left=-1,swap,"t_b"]&
+		{} \\
+		{A} 
+		\ar[r,rightarrowtail,"d"]
+		\ar[d,twoheadrightarrow,"a"] &
+		{B} 
+		\ar[d,twoheadrightarrow,"p"] 
+		\ar[ddr,bend left=20,"x"]&
+		{} \\
+		{A_Y} 
+		\ar[r,rightarrowtail,"p'"]
+		\ar[rrd,bend right=20,swap,"y"] &
+		{P} 
+		\ar[dr,dashed,"z"]&
+		{} \\
+		{} &
+		{} &
+		{Q} 
+		\end{tikzcd}
+		\]
+		We start with the squares and consider an $x \from B \to Q$ so that $t_bx=s_bx$.  Then the upper square commutes so $t_adx=s_adx$. Since $a$ co-equalizes $t_a,s_a$, this gives us $y \to A_Y \to Q$ so that $ay=dx$ which is universal.  Then, since the bottom square is a pushout, we get a universal map $z$ so the right triangle commutes.  Hence, $p$ is the co-equalizer of $t_b,s_b$.
+		
+		\textbf{(V) Show $A \to P$ is epic.} This is the hole in the proof.  We want to show that the composite $ap'=dp \from A \to P$ is epic.  Somehow use the regularity of $a$ and $p$ and the pushout square.
+		
+		\textbf{(VI) Make an isomorphism out of $d,p'$.} From the composite $A \to P$ being epic, it follows that $p'$ is epic.  We want $p'$ to be regular, which implies it's an isomorphism.  By assumptions that pushouts of monics are pullbacks, the square
+		\[
+		\begin{tikzcd}
+		{A} 
+		\ar[r,rightarrowtail,"d"]
+		\ar[d,twoheadrightarrow,"a"] &
+		{B} 
+		\ar[d,twoheadrightarrow,"p"] \\
+		{A_Y} 
+		\ar[r,"p'","\cong"'] &
+		{P} 
+		\end{tikzcd}
+		\] 
+		is a pullback, which respects regular epis (in a regular category) and so $d$ is regular epic, hence an isomorphism.
+		
+		\textbf{(VII) Find a map $P \to B_Y$.} We get the map $\psi \from P \to B_Y$ from the pushout square
+		\[
+		\begin{tikzcd}
+		{A} 
+		\ar[r,"d", "\cong"']
+		\ar[d,twoheadrightarrow,"a"] &
+		{B} 
+		\ar[d,twoheadrightarrow,"p"] 
+		\ar[ddr,bend left=20,"b"] &
+		{}\\
+		{A_Y} 
+		\ar[r,"p'","\cong"'] 
+		\ar[rrd,bend right=20,"\theta"'] &
+		{P} 
+		\ar[rd,dashed,"\psi"]\\
+		{} &
+		{} &
+		{B_Y} 
+		\end{tikzcd}
+		\]
+		
+		\textbf{(VIII) Show $\psi$ is monic.}  \textit{(I'm not certain this is needed. Maybe only $\psi$ to be regular epic.)} Get a map $\eta \from P \to T+_YS$ from the pushout square
+		\[
+		\begin{tikzcd}
+		{A} 
+		\ar[r,"d", "\cong"']
+		\ar[d,twoheadrightarrow,"a"] &
+		{B} 
+		\ar[d,twoheadrightarrow,"p"] 
+		\ar[ddr,bend left=20] &
+		{}\\
+		{A_Y} 
+		\ar[r,"p'","\cong"'] 
+		\ar[rrd,bend right=20,"c_y"'] &
+		{P} 
+		\ar[rd,dashed,"\eta"]\\
+		{} &
+		{} &
+		{T+_YS} 
+		\end{tikzcd}
+		\]
+		Now we have the diagram
+		\[
+		\begin{tikzcd}
+		{A} \ar[r,"d"] \ar[d,"a"] &
+		{B} \ar[r,rightarrowtail] \ar[d,"p"] &
+		{T+S} \ar[d]\\
+		{A_Y} \ar[r,"p'"] \ar[rr,bend right=20, "b_y"'] &
+		{P} \ar[r, "\eta"] &
+		{T+_YS} 
+		\end{tikzcd}
+		\]
+		whose outer and left squares are pushouts. So the right square is a pushout. But pushouts respects monics, so $\eta$ is monic.  We have that
+		\[
+		\begin{tikzcd}
+		{A_Y} 
+		\ar[r,"p'"] 
+		\ar[rd,rightarrowtail,"\theta"] &
+		{P} 
+		\ar[d,"\psi"] 
+		\ar[r,rightarrowtail,"\eta"]&
+		{T+S} \\
+		{} &
+		{B_Y} \ar[ur,rightarrowtail] &
+		{} 
+		\end{tikzcd}
+		\]
+		which gives us that $\psi$ is monic.  
+		
+		\textbf{(IX) Show $\psi$ is epic.} Recall a map is epic if and only if its co-kernel pair coincides.  That is we want to show that $\pi=\pi'$ in the pushout diagram
+		\[
+		\begin{tikzcd}
+		{P} \ar[r,"\psi"] \ar[d,"\psi"] &
+		{B_Y} \ar[d,"\pi"] \ar[ddr,bend left=20, rightarrowtail] &
+		{} \\
+		{B_Y} \ar[r,"\pi'"] \ar[rrd, bend right=20,rightarrowtail] &
+		{B_Y +_P B_Y} \ar[rd,dashed,"\rho"] &
+		{} \\
+		{} &
+		{} &
+		{T+_YS} 
+		\end{tikzcd}
+		\]
+		This also gives us $\rho \from B_Y +_P B_Y \to T+_YS$ and that $\pi,\pi'$ are monic. Note that we also have the pushout diagram
+		\[
+		\begin{tikzcd}
+		{P} 
+		\ar[r,rightarrowtail, "\psi f"] 
+		\ar[d, "\psi \pi"] &
+		{T+_YS} 
+		\ar[d,equal] 
+		\ar[ddr,bend left=20, "x"] &
+		{} \\
+		{B_Y +_P B_Y} 
+		\ar[r,"\rho"] 
+		\ar[rrd, bend right=20,"y"] &
+		{T+_YS} 
+		\ar[rd,dashed,"x"] &
+		{} \\
+		{} &
+		{} &
+		{Q} 
+		\end{tikzcd}
+		\]
+		where $x,y$ are maps making the outer square commute and $f \from B_Y \to T+_YS$ is us finally naming this map. To show this really is a pushout, we need to show $\rho x = y$. This follows from $\psi \pi \rho x =\psi f x = \psi \pi y$ and the fact that $\psi \pi$ is monic.  Because this is a pushout square, which respects monics, we know that $\rho$ is a monic.  Thus $\pi \rho = f = \pi' \rho$ so $\pi = \pi'$.  Therefore $\psi$ is epic.  
+		
+		\textbf{(X) Wrap up.} Because $\psi$ is epic (regular?) it is an isomorphism.  And so is $p'$ and so because
+		\[
+		\begin{tikzcd}
+		{A_Y} 
+		\ar[r,"p'"] 
+		\ar[rd,rightarrowtail,"\theta"] &
+		{P} 
+		\ar[d,"\psi"] \\
+		{} &
+		{B_Y} 
+		\end{tikzcd}
+		\]
+		we have that $\theta$ is an isomorphism.  
+		
+		
+		
+		
+		
+		
+		So we have a diagram 
+		\[
+		\begin{tikzcd}[column sep=small,row sep=small]
+		{} &
+		{} &
+		{} &
+		{T'} \ar[dr,rightarrowtail] \ar[ddd]&
+		{} \\
+		%
+		{} &
+		{T'\times_TT''} \ar[dddl] \ar[ddd,dashed] \ar[dr,rightarrowtail] 
+		\ar[rru,rightarrowtail] &
+		{} &
+		{} &
+		{T} \ar[ddd] \\
+		%
+		{} &
+		{} &
+		{T''} \ar[rru,rightarrowtail, crossing over] &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{} &
+		{T'+_YS'} \ar[dr] &
+		{} \\
+		%
+		{B} \ar[r,dashed, "\theta" description] \ar[rrru]  &
+		{A} \ar[rru,rightarrowtail] \ar[rd,rightarrowtail] &
+		{} &
+		{} &
+		{T+_YS} \\
+		%
+		{} &
+		{} &
+		{T''+_YS''} \ar[uuu,leftarrow, crossing over] &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{} &
+		{S'} \ar[uuu] \ar[rd,rightarrowtail] &
+		{} \\
+		%
+		{} &
+		{S'\times_SS''} \ar[rru,rightarrowtail] \ar[rd,rightarrowtail] 
+		\ar[uuu,dashed] \ar[uuul]&
+		{} &
+		{} &
+		{S} \ar[uuu] \\
+		%
+		{} &
+		{} &
+		{S''} \ar[uuu,crossing over] \ar[rru,rightarrowtail] &
+		{} &
+		{} \\
+		%
+		\ar[from=5-1,to=6-3,crossing over]
+		\ar[from=6-3,to=5-5,crossing over, rightarrowtail]
+		\end{tikzcd}
+		\]
+		where the vertical dashed arrows to $A$ are from the universal property of 
+		$B$ as a pushout.  This induces $\theta$.  The map $B \to T'+_YS'$ is the 
+		same as the dashed arrow in
+		\[
+		\begin{tikzcd}[column sep=small,row sep=small]
+		{} &
+		{} &
+		{T'\times_TT''} \ar[dr] \ar[ddd,rightarrowtail]&
+		{} &
+		{} \\
+		%
+		{Y} \ar[rru] \ar[rd] \ar[ddd,"\cong"]&
+		{} &
+		{} &
+		{(T'\times+_TT'')+(S'\times_SS'')}  \ar[ddd,rightarrowtail] \ar[r] &
+		{B} \ar[ddd,dashed]\\
+		%
+		{} &
+		{S'\times_SS''} \ar[rru,crossing over] &
+		{} &
+		{} &
+		{} \\
+		%
+		{} &
+		{} &
+		{T'} \ar[dr]&
+		{} &
+		{} \\
+		%
+		{Y} \ar[rru] \ar[rd]&
+		{} &
+		{} &
+		{T'+S'} \ar[r]&
+		{T'+_YS'} \\
+		%
+		{} &
+		{S'} \ar[rru] &
+		{} &
+		{} &
+		{} 
+		%
+		\ar[from=3-2,to=6-2,rightarrowtail,crossing over]
+		\end{tikzcd}
+		\]
+		By the above lemma, we know that the dashed arrow is monic.  Thus we have 
+		\[
+		\begin{tikzcd}
+		{B} \ar[r,"\theta"] \ar[rd,rightarrowtail] &
+		{A} \ar[d,rightarrowtail] \\
+		{} &
+		{T'+_YS'}
+		\end{tikzcd}
+		\]
+		which implies that $\theta$ is monic. 
+	\end{proof}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+\end{document}
